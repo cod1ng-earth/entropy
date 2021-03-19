@@ -1,0 +1,16 @@
+{
+  "name": "@entropy/contracts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "truffle": "^5.2.4"
+  },
+  "scripts": {
+    "chain": "truffle develop",
+    "migrate": "truffle migrate"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.4.1"
+  }
+}
