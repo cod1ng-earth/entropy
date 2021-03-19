@@ -27,7 +27,7 @@ const Matrix = ({ square, tunes }: { square: Square.Square, tunes: string[][] })
       row.forEach((tile, x)=>{
         if (tile){
           _turnedOnTunes.push(new Howl({
-            src: [`https://ipfs.io/ipfs/${tunes[x][y]}`],
+            src: [tunes[x][y]],
             format: ['wav'],
           }))
         }
