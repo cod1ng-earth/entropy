@@ -1,0 +1,17 @@
+.nav-bar {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  
+  @include lg {
+    margin: 0 auto;
+    max-width: 1200px;
+  }
+
+  & > ul {
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 15px;
+  }
+}

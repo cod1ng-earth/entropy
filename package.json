@@ -4,5 +4,8 @@
   "version": "1.0.0",
   "workspaces": [
       "./packages/*"
-  ]
+  ],
+  "scripts": {
+    "start:app": "cd packages/app && yarn start"
+  }
 }
