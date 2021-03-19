@@ -1,11 +1,30 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import styled from 'styled-components'
+
+const Nav = styled.nav`
+height: 60px;
+display: flex;
+align-items: center;
+
+@media (min-width: 1280px) {
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+& > ul {
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+`;
 
 const NavBar = () => {
   const { pathname } = useLocation()
 
   return (
-    <nav className="nav-bar">
+    <Nav>
       <ul>
         <li>
           <Link to="/">Home</Link>
@@ -15,7 +34,7 @@ const NavBar = () => {
         </li>
         <li>{pathname !== '/create' && <Link to="/create">Create</Link>}</li>
       </ul>
-    </nav>
+    </Nav>
   )
 }
 
