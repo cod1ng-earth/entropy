@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import {Howl} from 'howler';
+import Matrix from '../../ArtPiece/Matrix';
+import * as Square from '../../../lib/square';
 
 const initialBoard = () => {
   const boardArray = [];
@@ -20,8 +22,20 @@ const Create = () => {
       sound.play();
   }
 
+  const mx1 = Square.fromText(`10000001
+  01000010
+  00111100
+  00100100
+  00100100
+  00111100
+  01000010
+  10000001`)
+
   return (
     <div className="board">
+
+      <Matrix  square={mx1} />
+
       {board.map((item)=>(
         <div className="board-item" key={item.id} onClick={playToggle}>{item.id}</div>
       ))}
