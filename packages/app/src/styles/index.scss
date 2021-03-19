@@ -1,17 +1,5 @@
 // mixins
-@import './mq.scss';
 @import './reset.scss';
-
-// App
-@import '../components/App.scss';
-@import '../components/ContextAwarApp.scss';
-// Components
-@import '../components/Navigation/NavBar.scss';
-// Pages
-@import '../components/Pages/Create/Create.scss';
-
-
-// index
 
 body {
   margin: 0;
@@ -20,6 +8,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: black;
+  color: white;
 }
 
 code {

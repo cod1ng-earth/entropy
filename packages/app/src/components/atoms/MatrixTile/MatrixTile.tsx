@@ -11,9 +11,13 @@ interface Props {
 const Tile = styled.div<{ on: boolean }>`
   width: 40px;
   height: 40px;
-  margin: 2px;
+  margin: 5px;
+  border-radius: 2px;
   color: ${(props) => (props.on ? '#333333' : '#DDDDDD')};
-  background: ${(props) => (props.on ? '#33ddff' : '#333333')};
+  background: ${(props) => (props.on ? '#47dcfc' : '#ffffff')};
+  &:hover {
+    background: #b6b6b6;
+  }
 `
 
 const MatrixTile = ({ on, onClick, tune }: Props) => {

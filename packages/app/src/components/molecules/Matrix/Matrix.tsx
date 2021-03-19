@@ -49,7 +49,6 @@ const Matrix = ({ square, tunes }: { square: Square.Square, tunes: string[][] })
   }
   return (
     <div>
-      <MatrixDetails square={mySquare} />
         {mySquare.map((row, y) => (
           <Row key={y}>
             {row.map((bit, x) => (
@@ -57,9 +56,10 @@ const Matrix = ({ square, tunes }: { square: Square.Square, tunes: string[][] })
             ))}
           </Row>
         ))}
+        <MatrixDetails square={mySquare} />
       <button onClick={clear}>clear</button>
       <button onClick={playAll} disabled={!turnedOnTunes.length}>play</button>
-    </div>
+      </div>
   )
 }
 
