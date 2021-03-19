@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Howl } from 'howler'
 
 interface Props {
   on: boolean;
   onClick(): void;
+  tune: string;
 }
 
 const Tile = styled.div<{ on: boolean }>`
@@ -15,14 +16,20 @@ const Tile = styled.div<{ on: boolean }>`
   background: ${(props) => (props.on ? '#33ddff' : '#333333')};
 `
 
-const MatrixTile = ({on, onClick}: Props) => {
-  const sound = new Howl({
-    src: ['crabacus/the-open-source-drumkit/raw/master/crash/crash-bell1.wav'],
-  })
+const MatrixTile = ({ on, onClick, tune }: Props) => {
+
+  const [sound, setSound] = useState<Howl>();
+
+  useEffect(() => {
+    setSound(new Howl({
+      src: [`https://ipfs.io/ipfs/${tune}`],
+      format: ['wav'],
+    }))
+  }, [])
 
   const playToggle = () => {
     if (!on) {
-      sound.play()
+      sound?.play()
     }
   }
 

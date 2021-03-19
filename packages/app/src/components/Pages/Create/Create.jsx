@@ -1,10 +1,9 @@
 import React from 'react'
 import Matrix from '../../molecules/Matrix/Matrix'
 import * as Square from '../../../lib/square'
+import tunes from '../../../dummyData/tunes'
 
-
-const Create = () => {
-  const mx1 = Square.fromText(`10000001
+const mx1 = Square.fromText(`10000001
 01000010
 00111100
 00100100
@@ -13,7 +12,9 @@ const Create = () => {
 01000010
 10000001`)
 
-  return <Matrix square={mx1} />
+const Create = () => {
+
+  return <Matrix square={mx1} tunes={tunes}/>
 }
 
 export default Create
