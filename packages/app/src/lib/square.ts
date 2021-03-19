@@ -103,6 +103,8 @@ export function fromText(text: string): Square {
     const size = lines[0].length
     const square = empty(size);
     for (let y = 0; y < size; y++) {
+        console.log(lines[y]);
+        
         for (let x = 0; x < size; x++) {
             square[y][x] = lines[y][x] === "1";
         }
