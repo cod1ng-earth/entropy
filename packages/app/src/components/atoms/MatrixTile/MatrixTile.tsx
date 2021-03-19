@@ -22,7 +22,7 @@ const MatrixTile = ({ on, onClick, tune }: Props) => {
 
   useEffect(() => {
     setSound(new Howl({
-      src: [`https://ipfs.io/ipfs/${tune}`],
+      src: [tune],
       format: ['wav'],
     }))
   }, [])
