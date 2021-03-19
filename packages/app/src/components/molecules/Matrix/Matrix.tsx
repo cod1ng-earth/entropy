@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 import * as Square from '../../../lib/square'
 import MatrixDetails from '../../atoms/MatrixDetails/MatrixDetails'
@@ -29,9 +29,9 @@ const Matrix = ({ square }: { square: Square.Square }) => {
     <div>
       <MatrixDetails square={mySquare} />
         {mySquare.map((row, y) => (
-          <Row>
+          <Row key={y}>
             {row.map((bit, x) => (
-              <MatrixTile on={bit} onClick={() => toggle(x, y)} />
+              <MatrixTile key={x} on={bit} onClick={() => toggle(x, y)} />
             ))}
           </Row>
         ))}
