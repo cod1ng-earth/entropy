@@ -118,8 +118,9 @@ export function print(square: Square) {
     for (let y = 0; y < square.length; y++) {
         let row = '';
         for (let x = 0; x < square[y].length; x++) {
-            row += (square[y][x] === true ? '█' : ' ');
+            row += (square[y][x] === true ? '█' : '_');
         }
+        console.log(row);
     }
 }
 

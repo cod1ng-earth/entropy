@@ -4,10 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "ganache-cli": "^6.12.2",
     "truffle": "^5.2.4"
   },
   "scripts": {
-    "chain": "truffle develop",
+    "chain": "ganache-cli",
     "migrate": "truffle migrate"
   },
   "dependencies": {
