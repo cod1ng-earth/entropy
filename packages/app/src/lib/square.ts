@@ -102,7 +102,7 @@ export function fromText(text: string): Square {
     const lines = text.split("\n");
     const size = lines[0].length
     const square = empty(size);
-    for (let y = 0; y < size; y++) {
+    for (let y = 0; y < size; y++) {      
         for (let x = 0; x < size; x++) {
             square[y][x] = lines[y][x] === "1";
         }
@@ -120,7 +120,6 @@ export function print(square: Square) {
         for (let x = 0; x < square[y].length; x++) {
             row += (square[y][x] === true ? '█' : ' ');
         }
-        console.log(row);
     }
 }
 
