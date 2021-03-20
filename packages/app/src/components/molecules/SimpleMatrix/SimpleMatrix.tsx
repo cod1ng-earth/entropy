@@ -4,9 +4,7 @@ import * as Square from '../../../lib/square'
 // import MatrixDetails from '../../atoms/MatrixDetails/MatrixDetails'
 import MatrixTile from '../../atoms/MatrixTile/MatrixTile'
 import { Howl } from 'howler'
-import { ReactComponent as Clear } from './close.svg'
 import { ReactComponent as Play } from './play.svg'
-import { ReactComponent as Mint } from './diamond.svg'
 
 const Row = styled.div`
   display: flex;
@@ -17,7 +15,11 @@ const Row = styled.div`
 const Board = styled.div`
   display: grid;
   justify-content: center;
-  grid-template-columns: 400px 40px;
+  grid-template-columns: 100px 40px;
+`;
+
+const MatrixWrapper = styled.div<{ isSelected: boolean }>`
+  border: ${(props)=> props.isSelected ? 'solid 1px white': ''}
 `;
 
 const Actions = styled.div`
@@ -37,39 +39,21 @@ const Button = styled.button`
 
   }
 
-  &:hover {
-    & span {
-      display: inline;
-      margin-left: 5px;
-      background: gray;
-      padding: 2px;
-    }
-  }
-
   & svg {
     fill: white;
   }
 `;
 
-
 interface props {
+  onClick(): void;
   square: Square.Square;
   tunes: string[][];
-  isSelectable: boolean;
+  isSelected: boolean;
 }
 
-
-const Matrix = ({ square, tunes, isSelectable }: props) => {
+const SimpleMatrix = ({ square, tunes, onClick, isSelected }: props) => {
   const [mySquare, setSquare] = useState<Square.Square>(square)
   const [turnedOnTunes, setTurnedOnTunes] = useState<Howl[]>([]);
-
-  const toggle = (x: number, y: number) => {
-    if (isSelectable){
-      const nw = [...mySquare]
-      nw[y][x] = !mySquare[y][x]
-      setSquare(nw)
-    }
-  }
 
   useEffect(() => {
     const _turnedOnTunes: Howl[] = [];
@@ -88,55 +72,34 @@ const Matrix = ({ square, tunes, isSelectable }: props) => {
 
   }, [mySquare])
 
-  useEffect(() => {
-    setSquare(square);
-  }, [square])
-
   const playAll = () => {
     if (turnedOnTunes.length) {
       turnedOnTunes.forEach(sound => sound.play())
     }
   }
 
-  const clear = () => {
-    setSquare(Square.empty(8))
-  }
   return (
-    <Board>
-      <div>
+    <Board onClick={onClick}>
+      <MatrixWrapper isSelected={isSelected}>
         {mySquare.map((row, y) => (
           <Row key={y}>
             {row.map((bit, x) => (
-              <MatrixTile key={x} on={bit} onClick={() => toggle(x, y)} tune={tunes[x][y]} />
+              <MatrixTile key={x} on={bit} tune={tunes[x][y]} sm={true} />
             ))}
           </Row>
         ))}
-      </div>
+      </MatrixWrapper>
       <Actions>
         {/* <MatrixDetails square={mySquare} /> */}
-        {isSelectable && 
-          <Button onClick={clear}>
-            <Clear />
-            <span>Clear</span>
-          </Button>
-        }
+        
         <Button onClick={playAll}>
           <Play />
           <span>Play</span>
         </Button>
-        <Button onClick={() => null}>
-          <Mint />
-          <span>Mint</span>
-        </Button>
+        
       </Actions>
     </Board>
   )
 }
 
-const defaultProps = {
-  isSelectable: true,
-}
-
-Matrix.defaultProps = defaultProps;
-
-export default Matrix
+export default SimpleMatrix

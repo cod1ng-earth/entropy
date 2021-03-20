@@ -30,7 +30,7 @@ const NavBar = () => {
           <Link to="/">Home</Link>
         </li>
         <li>
-          <Link to="/projects">Projects</Link>
+          <Link to="/compose">Compose</Link>
         </li>
         <li>{pathname !== '/create' && <Link to="/create">Create</Link>}</li>
       </ul>
