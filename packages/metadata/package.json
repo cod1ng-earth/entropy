@@ -1,0 +1,15 @@
+{
+  "name": "@entropy/metadata",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "vercel": "^21.3.3"
+  },
+  "dependencies": {
+    "canvas": "^2.7.0"
+  },
+  "scripts": {
+    "vercel-build": "yum install libuuid-devel libmount-devel zlib && cp /lib64/{libuuid,libmount,libblkid,libz}.so.1 node_modules/canvas/build/Release/"
+  }
+}
