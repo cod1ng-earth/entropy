@@ -9,9 +9,7 @@ contract EntropyNFT is ERC721, Ownable {
     string baseUri = "";
     bytes16 private constant alphabet = "0123456789abcdef";
 
-    constructor(string memory _baseUri) public ERC721("Entropy", "ENT") {
-        baseUri = _baseUri;
-    }
+    constructor() public ERC721("Entropy", "ENT") {}
 
     function _mintGenesis(
         uint256 bit,
@@ -23,6 +21,10 @@ contract EntropyNFT is ERC721, Ownable {
             bit = bit * 2;
             _mint(msg.sender, bit);
         }
+    }
+
+    function updateBaseURI(string memory _baseUri) public onlyOwner {
+        baseUri = _baseUri;
     }
 
     function baseURI() public view override returns (string memory) {
