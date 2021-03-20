@@ -5,6 +5,7 @@ import App from './components/App'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import { Web3ReactProvider } from '@web3-react/core'
 import Web3 from 'web3';
+import { EntropyProvider } from './context/Entropy'
 
 const getLibrary = (provider:any) => {
   return new Web3(provider)
@@ -21,7 +22,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Web3ReactProvider getLibrary={getLibrary}>
       <ApolloProvider client={client}>
-        <App />
+        <EntropyProvider>
+          <App />
+        </EntropyProvider>
       </ApolloProvider>
     </Web3ReactProvider>
   </React.StrictMode>,

@@ -10,6 +10,7 @@ import { ReactComponent as Xor } from '../../../icons/xor.svg'
 import { ReactComponent as Or } from '../../../icons/or.svg'
 import { ReactComponent as Clear } from '../../../icons/clear.svg'
 import Matrix from '../../molecules/Matrix/Matrix'
+import { useEntropy } from '../../../context/Entropy'
 
 const Button = styled.button`
   display: flex;
@@ -52,7 +53,7 @@ const Actions = styled.div`
 
 const Compose = () => {
 
-const mx1 = Square.fromText(`10000001
+  const mx1 = Square.fromText(`10000001
 01000010
 00111100
 00100100
@@ -61,7 +62,7 @@ const mx1 = Square.fromText(`10000001
 01000010
 10000001`)
 
-const mx2 = Square.fromText(`10000001
+  const mx2 = Square.fromText(`10000001
 00000000
 00000000
 00100100
@@ -70,7 +71,7 @@ const mx2 = Square.fromText(`10000001
 11111111
 10000001`)
 
-const mx3 = Square.fromText(`00000000
+  const mx3 = Square.fromText(`00000000
 00000000
 00000000
 00100100
@@ -81,16 +82,26 @@ const mx3 = Square.fromText(`00000000
 
   const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React<Web3>();
 
-  const [tokens] = useState([{mx: mx1, id:1}, {mx:mx2, id:2}, {mx: mx3, id: 3}]);
+  const [tokens] = useState([{ mx: mx1, id: 1 }, { mx: mx2, id: 2 }, { mx: mx3, id: 3 }]);
   const [selected, setSelected] = useState<Record<number, boolean>>({});
   const [showActions, setShowActions] = useState<boolean>(false);
   const [composedSquare, setComposedSquare] = useState<Square.Square>([]);
   const [showClear, setShowClear] = useState<boolean>(false);
 
+  const {entropyFacade} = useEntropy();
 
-  const mint = () => {
-    activate(injected);
-    // TODO: call mint function
+
+  const handleMint = async (): Promise<void> => {
+    await activate(injected);
+    const tokenIds: number[] = [];
+    for (const item in selected) {
+
+      if (selected[item]) {
+        const binString = Square.toBinArray(tokens[item].mx).join('');
+        tokenIds.push(parseInt(binString, 2));
+      }
+    }
+    entropyFacade?.mintWithTokens(tokenIds);
   }
 
   const handleClick = (index: number) => {
@@ -101,12 +112,12 @@ const mx3 = Square.fromText(`00000000
   const handleOperation = (op: Square.Operation): void => {
     const selectedTokens = [];
     for (const item in selected) {
-      
+
       if (selected[item]) {
         selectedTokens.push(JSON.parse(JSON.stringify(tokens[item].mx)));
       }
     }
-    
+
     setComposedSquare(Square.operate(selectedTokens, op));
     setShowActions(false);
     setShowClear(true);
@@ -121,16 +132,16 @@ const mx3 = Square.fromText(`00000000
   useEffect(() => {
     let numberOfSelection = 0;
     for (const item in selected) {
-      
+
       if (selected[item]) {
         numberOfSelection += 1;
       }
     }
-      setShowActions(numberOfSelection > 1);
-      setComposedSquare([]);
-      setShowClear(false);
+    setShowActions(numberOfSelection > 1);
+    setComposedSquare([]);
+    setShowClear(false);
 
-    }, [selected])
+  }, [selected])
 
   return (
     <div>
@@ -161,8 +172,8 @@ const mx3 = Square.fromText(`00000000
           </Button>
         </Actions>
       }
-      {composedSquare.length > 0 && 
-        <Matrix square={composedSquare} isSelectable={false} />
+      {composedSquare.length > 0 &&
+        <Matrix square={composedSquare} isSelectable={false} onMint={handleMint} />
       }
     </div>
   )
