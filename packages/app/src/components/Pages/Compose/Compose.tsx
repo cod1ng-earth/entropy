@@ -50,6 +50,9 @@ const Actions = styled.div`
   }
 `;
 
+
+const Compose = () => {
+
 const mx1 = Square.fromText(`10000001
 01000010
 00111100
@@ -68,11 +71,18 @@ const mx2 = Square.fromText(`10000001
 11111111
 10000001`)
 
-const tokens = [mx1, mx2];
+const mx3 = Square.fromText(`00000000
+00000000
+00000000
+00100100
+00000000
+00000000
+00000000
+10000001`)
 
-const Compose = () => {
   const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React<Web3>();
 
+  const [tokens] = useState([{mx: mx1, id:1}, {mx:mx2, id:2}, {mx: mx3, id: 3}]);
   const [selected, setSelected] = useState<Record<number, boolean>>({});
   const [showActions, setShowActions] = useState<boolean>(false);
   const [composedSquare, setComposedSquare] = useState<Square.Square>([]);
@@ -94,7 +104,7 @@ const Compose = () => {
     for (const item in selected) {
       
       if (selected[item]) {
-        selectedTokens.push(tokens[item]);
+        selectedTokens.push(JSON.parse(JSON.stringify(tokens[item].mx)));
       }
     }
     
@@ -118,15 +128,18 @@ const Compose = () => {
       }
     }
       setShowActions(numberOfSelection > 1);
-  }, [selected])
+      setComposedSquare([]);
+      setShowClear(false);
+
+    }, [selected])
 
   return (
     <div>
       <Headline>Compose stuff here</Headline>
       <Subtitle>Blah blah</Subtitle>
       <Tokens>
-        {tokens.map((mx, index) => (
-          <SimpleMatrix square={mx} tunes={tunes} onClick={() => handleClick(index)} isSelected={selected[index]} />
+        {tokens.map((token, index) => (
+          <SimpleMatrix key={token.id} square={token.mx} tunes={tunes} onClick={() => handleClick(index)} isSelected={selected[index]} />
         ))}
       </Tokens>
       {showActions &&
