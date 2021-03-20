@@ -4,7 +4,8 @@ import * as Square from '../../../lib/square'
 // import MatrixDetails from '../../atoms/MatrixDetails/MatrixDetails'
 import MatrixTile from '../../atoms/MatrixTile/MatrixTile'
 import { Howl } from 'howler'
-import { ReactComponent as Play } from './play.svg'
+import { ReactComponent as Play } from '../../../icons/play.svg'
+import { ReactComponent as Pause } from '../../../icons/pause.svg'
 
 const Row = styled.div`
   display: flex;
@@ -19,7 +20,7 @@ const Board = styled.div`
 `;
 
 const MatrixWrapper = styled.div<{ isSelected: boolean }>`
-  border: ${(props)=> props.isSelected ? 'solid 1px white': ''}
+  border: ${(props) => props.isSelected ? 'solid 1px white' : ''}
 `;
 
 const Actions = styled.div`
@@ -54,6 +55,7 @@ interface props {
 const SimpleMatrix = ({ square, tunes, onClick, isSelected }: props) => {
   const [mySquare, setSquare] = useState<Square.Square>(square)
   const [turnedOnTunes, setTurnedOnTunes] = useState<Howl[]>([]);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     const _turnedOnTunes: Howl[] = [];
@@ -73,8 +75,15 @@ const SimpleMatrix = ({ square, tunes, onClick, isSelected }: props) => {
   }, [mySquare])
 
   const playAll = () => {
-    if (turnedOnTunes.length) {
+    if (turnedOnTunes.length && !isPlaying) {
       turnedOnTunes.forEach(sound => sound.play())
+      setIsPlaying(true);
+    }
+  }
+  const stopAll = () => {
+    if (turnedOnTunes.length && isPlaying) {
+      setIsPlaying(false);
+      turnedOnTunes.forEach(sound => sound.stop())
     }
   }
 
@@ -91,12 +100,18 @@ const SimpleMatrix = ({ square, tunes, onClick, isSelected }: props) => {
       </MatrixWrapper>
       <Actions>
         {/* <MatrixDetails square={mySquare} /> */}
-        
-        <Button onClick={playAll}>
-          <Play />
-          <span>Play</span>
-        </Button>
-        
+
+        {isPlaying ?
+          <Button onClick={stopAll}>
+            <Pause />
+            <span>Pause</span>
+          </Button>
+          : <Button onClick={playAll}>
+            <Play />
+            <span>Play</span>
+          </Button>
+        }
+
       </Actions>
     </Board>
   )
