@@ -3,6 +3,12 @@ import ReactDOM from 'react-dom'
 import './index.scss'
 import App from './components/App'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
+import { Web3ReactProvider } from '@web3-react/core'
+import Web3 from 'web3';
+
+const getLibrary = (provider:any) => {
+  return new Web3(provider)
+}
 
 const subgraphUri = process.env.REACT_APP_SUBGRAPH_URL
 
@@ -13,9 +19,11 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
+    </Web3ReactProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 )
