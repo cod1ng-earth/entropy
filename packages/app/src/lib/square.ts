@@ -99,12 +99,12 @@ export function fromBytes(id: Buffer): Square {
 }
 
 export function fromText(text: string): Square {
-    const lines = text.split("\n");
+    const lines = text.trim().split("\n");
     const size = lines[0].length
     const square = empty(size);
     for (let y = 0; y < size; y++) {      
         for (let x = 0; x < size; x++) {
-            square[y][x] = lines[y][x] === "1";
+            square[y][x] = lines[y].trim()[x] === "1";
         }
     }
     return square;

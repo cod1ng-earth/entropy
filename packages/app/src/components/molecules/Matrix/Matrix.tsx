@@ -4,9 +4,10 @@ import * as Square from '../../../lib/square'
 // import MatrixDetails from '../../atoms/MatrixDetails/MatrixDetails'
 import MatrixTile from '../../atoms/MatrixTile/MatrixTile'
 import { Howl } from 'howler'
-import { ReactComponent as Clear } from './close.svg'
-import { ReactComponent as Play } from './play.svg'
-import { ReactComponent as Mint } from './diamond.svg'
+import { ReactComponent as Clear } from '../../../icons/close.svg'
+import { ReactComponent as Play } from '../../../icons/play.svg'
+import { ReactComponent as Mint } from '../../../icons/diamond.svg'
+import { ReactComponent as Pause } from '../../../icons/pause.svg'
 
 const Row = styled.div`
   display: flex;
@@ -62,9 +63,10 @@ interface props {
 const Matrix = ({ square, tunes, isSelectable }: props) => {
   const [mySquare, setSquare] = useState<Square.Square>(square)
   const [turnedOnTunes, setTurnedOnTunes] = useState<Howl[]>([]);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const toggle = (x: number, y: number) => {
-    if (isSelectable){
+    if (isSelectable) {
       const nw = [...mySquare]
       nw[y][x] = !mySquare[y][x]
       setSquare(nw)
@@ -93,8 +95,16 @@ const Matrix = ({ square, tunes, isSelectable }: props) => {
   }, [square])
 
   const playAll = () => {
-    if (turnedOnTunes.length) {
+    if (turnedOnTunes.length && !isPlaying) {
       turnedOnTunes.forEach(sound => sound.play())
+      setIsPlaying(true);
+    }
+  }
+
+  const stopAll = () => {
+    if (turnedOnTunes.length && isPlaying) {
+      setIsPlaying(false);
+      turnedOnTunes.forEach(sound => sound.stop())
     }
   }
 
@@ -114,16 +124,22 @@ const Matrix = ({ square, tunes, isSelectable }: props) => {
       </div>
       <Actions>
         {/* <MatrixDetails square={mySquare} /> */}
-        {isSelectable && 
+        {isSelectable &&
           <Button onClick={clear}>
             <Clear />
             <span>Clear</span>
           </Button>
         }
-        <Button onClick={playAll}>
-          <Play />
-          <span>Play</span>
-        </Button>
+        {isPlaying ?
+          <Button onClick={stopAll}>
+            <Pause />
+            <span>Pause</span>
+          </Button>
+          : <Button onClick={playAll}>
+            <Play />
+            <span>Play</span>
+          </Button>
+        }
         <Button onClick={() => null}>
           <Mint />
           <span>Mint</span>
