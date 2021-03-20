@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Create from '../Pages/Create/Create';
+import Compose from '../Pages/Compose/Compose';
 
 const Navigation = () => {
   return (
@@ -11,6 +12,9 @@ const Navigation = () => {
       </Route>
       <Route path="/create">
         <Create />
+      </Route>
+      <Route path="/compose">
+        <Compose />
       </Route>
       <Route path="/">
       </Route>

@@ -4,14 +4,15 @@ import { Howl } from 'howler'
 
 interface Props {
   on: boolean;
-  onClick(): void;
+  onClick?: () => void;
   tune: string;
+  sm: boolean;
 }
 
-const Tile = styled.div<{ on: boolean }>`
-  width: 40px;
-  height: 40px;
-  margin: 5px;
+const Tile = styled.div<{ on: boolean, sm: boolean }>`
+  width: ${(props) => (props.sm ? '8px' : '40px')};
+  height: ${(props) => (props.sm ? '8px' : '40px')};
+  margin: ${(props) => (props.sm ? '2px' : '5px')};
   border-radius: 2px;
   color: ${(props) => (props.on ? '#333333' : '#DDDDDD')};
   background: ${(props) => (props.on ? '#47dcfc' : '#ffffff')};
@@ -20,7 +21,7 @@ const Tile = styled.div<{ on: boolean }>`
   }
 `
 
-const MatrixTile = ({ on, onClick, tune }: Props) => {
+const MatrixTile = ({ on, onClick, tune, sm }: Props) => {
 
   const [sound, setSound] = useState<Howl>();
 
@@ -38,15 +39,23 @@ const MatrixTile = ({ on, onClick, tune }: Props) => {
   }
 
   const handleClick = () => {
-    playToggle();
-    onClick();
+    if (onClick) {
+      playToggle();
+      onClick();
+    }
   }
 
   return (
-    <Tile on={on} onClick={handleClick}>
+    <Tile on={on} onClick={handleClick} sm={sm}>
       {on}
     </Tile>
   )
 }
+
+const defaultProps = {
+  sm: false,
+}
+
+MatrixTile.defaultProps = defaultProps;
 
 export default MatrixTile
