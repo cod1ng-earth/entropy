@@ -14,12 +14,15 @@ const List = styled.ul`
 `
 
 const Filter = styled.div`
-  background: gray;
-  width: 200px;
-  font-size: 18px;
-  color: white;
-  border-radius: 2px;
-  margin: 2rem;
+  & select {
+    background: gray;
+    width: 200px;
+    font-size: 18px;
+    color: white;
+    border-radius: 2px;
+    margin: 2rem;
+  }
+  
 `;
 
 const ArtPiece = styled.li<{ isSelected: boolean }>`
