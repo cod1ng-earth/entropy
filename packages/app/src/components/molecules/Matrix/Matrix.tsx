@@ -8,6 +8,7 @@ import { ReactComponent as Clear } from '../../../icons/close.svg'
 import { ReactComponent as Play } from '../../../icons/play.svg'
 import { ReactComponent as Mint } from '../../../icons/diamond.svg'
 import { ReactComponent as Pause } from '../../../icons/pause.svg'
+import tunes from '../../../dummyData/tunes'
 
 const Row = styled.div`
   display: flex;
@@ -55,12 +56,11 @@ const Button = styled.button`
 
 interface props {
   square: Square.Square;
-  tunes: string[][];
   isSelectable: boolean;
 }
 
 
-const Matrix = ({ square, tunes, isSelectable }: props) => {
+const Matrix = ({ square, isSelectable }: props) => {
   const [mySquare, setSquare] = useState<Square.Square>(square)
   const [turnedOnTunes, setTurnedOnTunes] = useState<Howl[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -78,10 +78,7 @@ const Matrix = ({ square, tunes, isSelectable }: props) => {
     mySquare.forEach((row, y) => {
       row.forEach((tile, x) => {
         if (tile) {
-          _turnedOnTunes.push(new Howl({
-            src: [tunes[x][y]],
-            format: ['wav'],
-          }))
+          _turnedOnTunes.push(tunes[x][y])
         }
       })
     })

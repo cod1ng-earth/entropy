@@ -5,7 +5,7 @@ import { Howl } from 'howler'
 interface Props {
   on: boolean;
   onClick?: () => void;
-  tune: string;
+  tune: Howl;
   sm: boolean;
 }
 
@@ -23,18 +23,12 @@ const Tile = styled.div<{ on: boolean, sm: boolean }>`
 
 const MatrixTile = ({ on, onClick, tune, sm }: Props) => {
 
-  const [sound, setSound] = useState<Howl>();
-
-  useEffect(() => {
-    setSound(new Howl({
-      src: [tune],
-      format: ['wav'],
-    }))
-  }, [])
 
   const playToggle = () => {
     if (!on) {
-      sound?.play()
+      tune?.play()
+    } else {
+      tune.stop();
     }
   }
 

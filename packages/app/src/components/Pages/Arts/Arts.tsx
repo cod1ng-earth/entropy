@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import tunes from '../../../dummyData/tunes'
 import * as Square from '../../../lib/square'
 import SimpleMatrix from '../../molecules/SimpleMatrix/SimpleMatrix'
 import { ReactComponent as And } from '../../../icons/and.svg'
@@ -235,7 +234,7 @@ const Arts = () => {
       <List>
         {arts.map((art, index) => (
           <ArtPiece isSelected={selected[index]} key={art.id} onClick={() => handleClick(index)}>
-            <SimpleMatrix key={art.id} square={art.mx} tunes={tunes} onClick={() => null} isSelected={false} />
+            <SimpleMatrix key={art.id} square={art.mx} onClick={() => null} isSelected={false} />
             <Artist>
               <h2>Artist:&nbsp;</h2>
               <span>{art.artist}</span>
@@ -266,7 +265,7 @@ const Arts = () => {
 
             <ModalContent>
               <CloseButton onClick={closeModal}>&times;</CloseButton>
-              <Matrix square={composedSquare} tunes={tunes} isSelectable={false} />
+              <Matrix square={composedSquare} isSelectable={false} />
             </ModalContent>
 
           </Modal>

@@ -6,6 +6,7 @@ import MatrixTile from '../../atoms/MatrixTile/MatrixTile'
 import { Howl } from 'howler'
 import { ReactComponent as Play } from '../../../icons/play.svg'
 import { ReactComponent as Pause } from '../../../icons/pause.svg'
+import tunes from '../../../dummyData/tunes'
 
 const Row = styled.div`
   display: flex;
@@ -48,11 +49,10 @@ const Button = styled.button`
 interface props {
   onClick(): void;
   square: Square.Square;
-  tunes: string[][];
   isSelected: boolean;
 }
 
-const SimpleMatrix = ({ square, tunes, onClick, isSelected }: props) => {
+const SimpleMatrix = ({ square, onClick, isSelected }: props) => {
   const [mySquare, setSquare] = useState<Square.Square>(square)
   const [turnedOnTunes, setTurnedOnTunes] = useState<Howl[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -62,14 +62,10 @@ const SimpleMatrix = ({ square, tunes, onClick, isSelected }: props) => {
     mySquare.forEach((row, y) => {
       row.forEach((tile, x) => {
         if (tile) {
-          _turnedOnTunes.push(new Howl({
-            src: [tunes[x][y]],
-            format: ['wav'],
-          }))
+          _turnedOnTunes.push(tunes[x][y])
         }
       })
     })
-    _turnedOnTunes.forEach(sound => sound.load())
     setTurnedOnTunes(_turnedOnTunes);
 
   }, [mySquare])
