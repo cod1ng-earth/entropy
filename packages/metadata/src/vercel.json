@@ -1,8 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/nft/:id*.json",
-      "destination": "/api?id=:id*"
+      "source": "/image/:id*.png",
+      "destination": "/api/image?id=:id*"
+    },
+    {
+      "source": "/token/:id*.json",
+      "destination": "/api/token?id=:id*"
     }
   ]
 }
