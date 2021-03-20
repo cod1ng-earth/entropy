@@ -15,7 +15,8 @@ function erc721MetaData(tokenId) {
 }
 
 module.exports = (req, res) => {
-  const tokenId = req.query.id;
+  const xTokenId = req.query.id;
+  const tokenId = xTokenId.substr(2);
   const metaData = erc721MetaData(tokenId)
   res.json(metaData);
 }

@@ -6,8 +6,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract EntropyNFT is ERC721, Ownable {
     bool initialized = false;
+    string baseUri = "";
+    bytes16 private constant alphabet = "0123456789abcdef";
 
-    constructor() public ERC721("Entropy", "ENT") {}
+    constructor(string memory _baseUri) public ERC721("Entropy", "ENT") {
+        baseUri = _baseUri;
+    }
 
     function _mintGenesis(
         uint256 bit,
@@ -19,6 +23,10 @@ contract EntropyNFT is ERC721, Ownable {
             bit = bit * 2;
             _mint(msg.sender, bit);
         }
+    }
+
+    function baseURI() public view override returns (string memory) {
+        return baseUri;
     }
 
     function genesis1() public onlyOwner {
@@ -56,5 +64,42 @@ contract EntropyNFT is ERC721, Ownable {
             result = operateOr(result, tokenIds[i]);
         }
         _mint(msg.sender, result);
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override
+        returns (string memory)
+    {
+        require(
+            _exists(tokenId),
+            "ERC721Metadata: URI query for nonexistent token"
+        );
+
+        return
+            string(
+                abi.encodePacked(baseURI(), _toHexString(tokenId, 8), ".json")
+            );
+    }
+
+    //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Strings.sol
+    /**
+     * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
+     */
+    function _toHexString(uint256 value, uint256 length)
+        internal
+        pure
+        returns (string memory)
+    {
+        bytes memory buffer = new bytes(2 * length + 2);
+        buffer[0] = "0";
+        buffer[1] = "x";
+        for (uint256 i = 2 * length + 1; i > 1; --i) {
+            buffer[i] = alphabet[value & 0xf];
+            value >>= 4;
+        }
+        require(value == 0, "Strings: hex length insufficient");
+        return string(buffer);
     }
 }
