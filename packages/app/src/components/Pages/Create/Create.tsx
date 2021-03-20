@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import Matrix from '../../molecules/Matrix/Matrix'
 import * as Square from '../../../lib/square'
-import tunes from '../../../dummyData/tunes'
 import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import Web3 from 'web3'
@@ -43,7 +42,7 @@ const Create = () => {
     <div>
       <Headline>Entropy</Headline>
       <Subtitle>This will be here until we come up with somthing</Subtitle>
-      <Matrix square={mx1} tunes={tunes} />
+      <Matrix square={mx1} />
       <button onClick={mint}>Mint</button>
     </div>
   )

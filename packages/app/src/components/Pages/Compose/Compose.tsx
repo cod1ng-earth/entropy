@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import * as Square from '../../../lib/square'
-import tunes from '../../../dummyData/tunes'
 import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
 import Web3 from 'web3'
@@ -139,7 +138,7 @@ const mx3 = Square.fromText(`00000000
       <Subtitle>Blah blah</Subtitle>
       <Tokens>
         {tokens.map((token, index) => (
-          <SimpleMatrix key={token.id} square={token.mx} tunes={tunes} onClick={() => handleClick(index)} isSelected={selected[index]} />
+          <SimpleMatrix key={token.id} square={token.mx} onClick={() => handleClick(index)} isSelected={selected[index]} />
         ))}
       </Tokens>
       {showActions &&
@@ -163,7 +162,7 @@ const mx3 = Square.fromText(`00000000
         </Actions>
       }
       {composedSquare.length > 0 && 
-        <Matrix square={composedSquare} tunes={tunes} isSelectable={false} />
+        <Matrix square={composedSquare} isSelectable={false} />
       }
     </div>
   )
