@@ -7,6 +7,7 @@ import { Howl } from 'howler'
 import { ReactComponent as Play } from '../../../icons/play.svg'
 import { ReactComponent as Pause } from '../../../icons/pause.svg'
 import tunes from '../../../dummyData/tunes'
+import { Link } from 'react-router-dom'
 
 const Row = styled.div`
   display: flex;
@@ -18,14 +19,15 @@ const Board = styled.div`
   display: grid;
   justify-content: center;
   grid-template-columns: 100px 40px;
+  margin-bottom: 2rem;
 `;
 
 const MatrixWrapper = styled.div<{ isSelected: boolean }>`
-  border: ${(props) => props.isSelected ? 'solid 1px white' : ''}
+  border: ${(props) => props.isSelected ? 'solid 2px #27ffe2' : ''}
 `;
 
 const Actions = styled.div`
-  display: flex;
+display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin-left: 0.5rem;
@@ -85,7 +87,7 @@ const SimpleMatrix = ({ square, onClick, isSelected }: props) => {
 
   return (
     <Board onClick={onClick}>
-      <MatrixWrapper isSelected={isSelected}>
+      <MatrixWrapper isSelected={isSelected} >
         {mySquare.map((row, y) => (
           <Row key={y}>
             {row.map((bit, x) => (
@@ -107,8 +109,8 @@ const SimpleMatrix = ({ square, onClick, isSelected }: props) => {
             <span>Play</span>
           </Button>
         }
-
-      </Actions>
+        <Link to={`/token/${Square.toHex(mySquare)}`}>D</Link>
+      </Actions> 
     </Board>
   )
 }

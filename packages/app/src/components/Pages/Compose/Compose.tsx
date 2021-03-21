@@ -41,7 +41,7 @@ const Subtitle = styled.h2`
 `
 
 const Tokens = styled.div`
-margin-top: 2rem;
+  margin-top: 2rem;
   display: flex;
   flex-wrap:wrap;
 `;
@@ -168,8 +168,8 @@ const Compose = () => {
       {!isWalletPending &&
         <div>
           <Headline>Compose</Headline>
-          <Subtitle>You can compose your tokens together and mint a new one here</Subtitle>
-          <Subtitle>start by selecting multiple tokens</Subtitle>
+          <Subtitle>Select some of your tokens to mint a new one.</Subtitle>
+          <Subtitle>start by selecting multiple tokens:</Subtitle>
           {isTokensPending && <span>Loading...</span>}
           {!isTokensPending && tokens.length > 0 &&
             <Tokens>

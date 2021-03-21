@@ -156,3 +156,8 @@ export function bitsToBytes(bits: number[]): Buffer {
     }
     return ret;
 }
+
+export function toHex(square: Square) {
+    const hex = Buffer.from(bitsToBytes(toBinArray(square))).toString('hex');
+    return hex;
+}

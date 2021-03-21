@@ -20,24 +20,27 @@ const List = styled.ul`
 `
 
 const Filter = styled.div`
-  & select {
+  margin-left: 2rem;
+  label {
+    
+  }
+  select {
     background: gray;
     width: 200px;
+    padding: .2rem;
     font-size: 18px;
     color: white;
     border-radius: 2px;
-    margin: 2rem;
+    
   }
   
 `;
-
 const ArtPiece = styled.li<{ isSelected: boolean }>`
-  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  padding: 0.5rem;
-  box-shadow: ${({ isSelected }) => isSelected ? '3px 3px 7px yellow' : '3px 3px 7px'};
+  align-items: center;
+  justify-content: center;
+  box-shadow: ${({ isSelected }) => isSelected ? '2px 1px 14px #00ffea' : '0px 0px 2px'};
   width: 180px;
   height: 180px;
   background: #00203b;
@@ -228,11 +231,12 @@ const Arts = () => {
 
   return (
     <React.Fragment>
-      {isWalletPending && <div>Please login to your wallet</div>}
+      {isWalletPending && <div>Please connect to your wallet</div>}
       {!isWalletPending &&
         <React.Fragment>
 
           <Filter>
+            <label>show: </label>
             <select onChange={(e)=> setShowMyTokens(e.target.value === 'my_tokens')}>
               <option value="my_tokens">My tokens</option>
               <option value="all_tokens">All tokens</option>
@@ -244,7 +248,6 @@ const Arts = () => {
               arts.map((art, index) => (
                 <ArtPiece isSelected={selected[index]} key={art.id} onClick={() => handleClick(index)}>
                   <SimpleMatrix square={art.mx} onClick={() => null} isSelected={false} />
-
                 </ArtPiece>
               ))}
             {showActions && (
@@ -262,7 +265,6 @@ const Arts = () => {
             )}
             {composedSquare.length > 0 &&
               <Modal >
-
 
                 <ModalContent>
                   <CloseButton onClick={closeModal}>&times;</CloseButton>
