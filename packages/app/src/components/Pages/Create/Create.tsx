@@ -30,7 +30,7 @@ const mx1 = Square.fromText(`10000001
 10000001`)
 
 const Create = () => {
-  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React<Web3>();
+  const { activate } = useWeb3React<Web3>();
 
 
   const mint = () => {
@@ -42,7 +42,7 @@ const Create = () => {
     <div>
       <Headline>Entropy</Headline>
       <Subtitle>This will be here until we come up with somthing</Subtitle>
-      <Matrix square={mx1} />
+      <Matrix square={mx1} isMintable={true} />
     </div>
   )
 }

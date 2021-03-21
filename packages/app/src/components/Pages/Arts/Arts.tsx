@@ -266,7 +266,7 @@ const Arts = () => {
 
                 <ModalContent>
                   <CloseButton onClick={closeModal}>&times;</CloseButton>
-                  <Matrix square={composedSquare} isSelectable={false} />
+                  <Matrix square={composedSquare} isSelectable={false} isMintable={false}/>
                 </ModalContent>
 
               </Modal>

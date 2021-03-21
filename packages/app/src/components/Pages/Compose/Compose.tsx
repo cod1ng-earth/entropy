@@ -196,7 +196,7 @@ const Compose = () => {
             </ActionWrapper>
           }
           {composedSquare.length > 0 && !isMinting &&
-            <Matrix square={composedSquare} isSelectable={false} onMint={handleMint} />
+            <Matrix square={composedSquare} isSelectable={false} onMint={handleMint} isMintable={true} />
           }
           {isMinting &&
             <span>minting in progress</span>

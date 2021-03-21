@@ -56,12 +56,13 @@ const Button = styled.button`
 
 interface props {
   square: Square.Square;
+  isMintable: boolean;
   isSelectable: boolean;
   onMint?: () => void;
 }
 
 
-const Matrix = ({ square, isSelectable, onMint }: props) => {
+const Matrix = ({ square, isSelectable, onMint, isMintable }: props) => {
   const [mySquare, setSquare] = useState<Square.Square>(square)
   const [turnedOnTunes, setTurnedOnTunes] = useState<Howl[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -138,10 +139,13 @@ const Matrix = ({ square, isSelectable, onMint }: props) => {
             <span>Play</span>
           </Button>
         }
-        <Button onClick={onMint}>
-          <Mint />
-          <span>Mint</span>
-        </Button>
+        {isMintable &&
+          <Button onClick={onMint}>
+            <Mint />
+            <span>Mint</span>
+          </Button>
+        }
+
       </Actions>
     </Board>
   )
@@ -149,7 +153,7 @@ const Matrix = ({ square, isSelectable, onMint }: props) => {
 
 const defaultProps = {
   isSelectable: true,
-  onMint: () => {}
+  onMint: () => { }
 }
 
 Matrix.defaultProps = defaultProps;
