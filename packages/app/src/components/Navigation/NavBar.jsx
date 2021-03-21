@@ -3,22 +3,22 @@ import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 
 const Nav = styled.nav`
-height: 60px;
-display: flex;
-align-items: center;
-
-@media (min-width: 1280px) {
-  margin: 0 auto;
-  max-width: 1200px;
-}
-
-& > ul {
-  padding: 0;
-  list-style: none;
+  height: 60px;
   display: flex;
-  gap: 15px;
-}
-`;
+  align-items: center;
+
+  @media (min-width: 1280px) {
+    margin: 0 auto;
+    max-width: 1200px;
+  }
+
+  & > ul {
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 15px;
+  }
+`
 
 const NavBar = () => {
   const { pathname } = useLocation()
@@ -32,7 +32,9 @@ const NavBar = () => {
         <li>
           <Link to="/compose">Compose</Link>
         </li>
-        <li>{pathname !== '/create' && <Link to="/create">Create</Link>}</li>
+        <li>
+          <Link to="/create">Create</Link>
+        </li>
       </ul>
     </Nav>
   )
