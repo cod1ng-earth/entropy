@@ -7,7 +7,9 @@
     "vercel": "^21.3.3"
   },
   "dependencies": {
-    "canvas": "^2.7.0"
+    "canvas": "^2.7.0",
+    "seedrandom": "^3.0.5",
+    "tinycolor2": "^1.4.2"
   },
   "scripts": {
     "vercel-build": "yum install libuuid-devel libmount-devel zlib && cp /lib64/{libuuid,libmount,libblkid,libz}.so.1 node_modules/canvas/build/Release/"

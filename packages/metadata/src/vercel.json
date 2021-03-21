@@ -5,6 +5,10 @@
       "destination": "/api/image?id=:id*"
     },
     {
+      "source": "/fancy/:id*.png",
+      "destination": "/api/image?render=fancy&id=:id*"
+    },
+    {
       "source": "/token/:id*.json",
       "destination": "/api/token?id=:id*"
     }
