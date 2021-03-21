@@ -21,6 +21,10 @@ const Button = styled.button`
   & svg {
     fill: white;
   }
+
+  & svg:hover {
+    fill: #1adede;
+  }
 `;
 
 const Headline = styled.h1`
@@ -37,6 +41,7 @@ const Subtitle = styled.h2`
 `
 
 const Tokens = styled.div`
+margin-top: 2rem;
   display: flex;
   flex-wrap:wrap;
 `;
@@ -49,6 +54,10 @@ const Actions = styled.div`
     width: 60px;
     height: 60px;
   }
+`;
+
+const ActionWrapper = styled.div`
+  margin-top: 3rem;
 `;
 
 
@@ -158,8 +167,9 @@ const Compose = () => {
     <React.Fragment>
       {!isWalletPending &&
         <div>
-          <Headline>Compose stuff here</Headline>
-          <Subtitle>Blah blah</Subtitle>
+          <Headline>Compose</Headline>
+          <Subtitle>You can compose your tokens together and mint a new one here</Subtitle>
+          <Subtitle>start by selecting multiple tokens</Subtitle>
           {isTokensPending && <span>Loading...</span>}
           {!isTokensPending && tokens.length > 0 &&
             <Tokens>
@@ -169,25 +179,22 @@ const Compose = () => {
             </Tokens>
           }
           {showActions &&
-            <Actions>
-              <Button onClick={() => handleOperation(Square.xor)}>
-                <Xor />
-              </Button>
-              <Button onClick={() => handleOperation(Square.and)}>
-                <And />
-              </Button>
-              <Button onClick={() => handleOperation(Square.or)}>
-                <Or />
-              </Button>
-            </Actions>
+            <ActionWrapper>
+              <Subtitle>Select one operation to see the result</Subtitle>
+
+              <Actions>
+                <Button onClick={() => handleOperation(Square.xor)}>
+                  <Xor />
+                </Button>
+                <Button onClick={() => handleOperation(Square.and)}>
+                  <And />
+                </Button>
+                <Button onClick={() => handleOperation(Square.or)}>
+                  <Or />
+                </Button>
+              </Actions>
+            </ActionWrapper>
           }
-          {/* {showClear &&
-            <Actions>
-              <Button onClick={handleClear}>
-                <Clear />
-              </Button>
-            </Actions>
-          } */}
           {composedSquare.length > 0 && !isMinting &&
             <Matrix square={composedSquare} isSelectable={false} onMint={handleMint} />
           }
