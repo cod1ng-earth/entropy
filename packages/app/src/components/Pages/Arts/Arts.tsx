@@ -11,8 +11,8 @@ import { useWeb3React } from '@web3-react/core'
 import Web3 from 'web3'
 import { injected } from '../../../connectors/connectors'
 import { useAsync } from 'react-async'
-import BN from 'bn.js';
 import { useToasts } from 'react-toast-notifications';
+import intToBuffer from '../../../lib/intToBuffer'
 
 const List = styled.ul`
   display: grid;
@@ -133,6 +133,7 @@ const Arts = () => {
   const [showActions, setShowActions] = useState(false)
   const [selected, setSelected] = useState<Record<number, boolean>>({});
   const [composedSquare, setComposedSquare] = useState<Square.Square>([]);
+  const [showMyTokens, setShowMyTokens] = useState<boolean>(true);
 
   const { activate } = useWeb3React<Web3>();
   const { entropyFacade } = useEntropy();
@@ -175,28 +176,43 @@ const Arts = () => {
 
   }, [selected])
 
-  const fetchAllTokens = useCallback(async () => {
+  const fetchAllTokens = async () => {
     if (entropyFacade) {
       const artTokens: any = [];
       const all = await entropyFacade.getAllTokens();
       all.forEach((num: number, index: number) => {
+        const sq = Square.fromBytes(intToBuffer(num));
 
-        const bn = new BN(num, 10);
-        let buf;
-        try {
-          buf = bn.toArrayLike(Buffer, 'le', 8);
-        } catch {
-          buf = bn.toArrayLike(Buffer, 'le', 16);
-        }
-        
-        const sq = Square.fromBytes(buf);
-        
         artTokens.push({ id: index, mx: sq })
       })
       setArts(artTokens);
     }
 
-  }, [entropyFacade])
+  }
+
+  const fetchMyTokens = async () => {
+    if (entropyFacade) {
+      const artTokens: any = [];
+      const all = await entropyFacade.getMyTokens();
+      all.forEach((num: number, index: number) => {
+        const sq = Square.fromBytes(intToBuffer(num));
+
+        artTokens.push({ id: index, mx: sq })
+      })
+      setArts(artTokens);
+    }
+  }
+
+  const fetchTokens = useCallback(async () => {
+    if (entropyFacade) {
+      if (showMyTokens) {
+        return fetchMyTokens();
+      } else {
+        return fetchAllTokens();
+      }
+    }
+
+  }, [showMyTokens, entropyFacade])
 
   const { isPending: isWalletPending } = useAsync({
     promiseFn: useCallback(async () => {
@@ -207,7 +223,7 @@ const Arts = () => {
   });
 
   const { isPending: isTokensPending } = useAsync({
-    promiseFn: fetchAllTokens,
+    promiseFn: fetchTokens,
   });
 
   return (
@@ -217,9 +233,9 @@ const Arts = () => {
         <React.Fragment>
 
           <Filter>
-            <select>
-              <option>All tokens</option>
-              <option>My tokens</option>
+            <select onChange={(e)=> setShowMyTokens(e.target.value === 'my_tokens')}>
+              <option value="my_tokens">My tokens</option>
+              <option value="all_tokens">All tokens</option>
             </select>
           </Filter>
           <List>

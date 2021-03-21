@@ -1,6 +1,6 @@
 export type Square = Array<Array<boolean>>;
 export type Operation = (y: boolean, x: boolean) => boolean;
-export interface Entropy  {
+export interface Entropy {
     x: number[];
     y: number[];
     s: { x: number, y: number };
@@ -87,7 +87,7 @@ export function fromBytes(id: Buffer): Square {
         res += byte2bin(byte);
     }
 
-    
+
     const size = Math.floor(Math.sqrt(res.length));
     const square = new Array<Array<boolean>>(size);
     for (let y = 0; y < size; y++) {
@@ -103,7 +103,7 @@ export function fromText(text: string): Square {
     const lines = text.trim().split("\n");
     const size = lines[0].length
     const square = empty(size);
-    for (let y = 0; y < size; y++) {      
+    for (let y = 0; y < size; y++) {
         for (let x = 0; x < size; x++) {
             square[y][x] = lines[y].trim()[x] === "1";
         }
@@ -145,10 +145,10 @@ export function bitsToBytes(bits: number[]): Buffer {
     const byteLength = bits.length / 8;
 
     const ret = Buffer.alloc(byteLength);
-    for(let b = 0; b<byteLength; b++) {
+    for (let b = 0; b < byteLength; b++) {
         let byte = 0x0;
-        for (let bt = 0; bt<8; bt++) {
-            if (bits[8*b + bt] === 1) {
+        for (let bt = 0; bt < 8; bt++) {
+            if (bits[8 * b + bt] === 1) {
                 byte |= (128 >> bt);
             }
         }

@@ -11,9 +11,8 @@ import { ReactComponent as Or } from '../../../icons/or.svg'
 import Matrix from '../../molecules/Matrix/Matrix'
 import { useEntropy } from '../../../context/Entropy'
 import { useAsync } from 'react-async';
-import BN from 'bn.js'
 import { useToasts } from 'react-toast-notifications';
-
+import intToBuffer from '../../../lib/intToBuffer';
 const Button = styled.button`
   display: flex;
   align-items: center;
@@ -128,16 +127,7 @@ const Compose = () => {
       const artTokens: any = [];
       const all = await entropyFacade.getMyTokens();
       all.forEach((num: number, index: number) => {
-
-        const bn = new BN(num, 10);
-        let buf;
-        try {
-          buf = bn.toArrayLike(Buffer, 'le', 8);
-        } catch {
-          buf = bn.toArrayLike(Buffer, 'le', 16);
-        }
-
-        const sq = Square.fromBytes(buf);
+        const sq = Square.fromBytes(intToBuffer(num));
 
         artTokens.push({ id: index, mx: sq })
         rawTokens.push({ id: index, tokenId: num })
