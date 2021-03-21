@@ -6,6 +6,8 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import { Web3ReactProvider } from '@web3-react/core'
 import Web3 from 'web3';
 import { EntropyProvider } from './context/Entropy'
+import { ToastProvider } from 'react-toast-notifications';
+import Toast from './components/atoms/Toast/Toast'
 
 const getLibrary = (provider:any) => {
   return new Web3(provider)
@@ -23,7 +25,9 @@ ReactDOM.render(
     <Web3ReactProvider getLibrary={getLibrary}>
       <ApolloProvider client={client}>
         <EntropyProvider>
+        <ToastProvider components={{ Toast }} autoDismiss={false} placement='bottom-center'>
           <App />
+          </ToastProvider>
         </EntropyProvider>
       </ApolloProvider>
     </Web3ReactProvider>

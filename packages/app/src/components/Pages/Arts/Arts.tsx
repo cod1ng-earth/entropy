@@ -12,6 +12,7 @@ import Web3 from 'web3'
 import { injected } from '../../../connectors/connectors'
 import { useAsync } from 'react-async'
 import BN from 'bn.js';
+import { useToasts } from 'react-toast-notifications';
 
 const List = styled.ul`
   display: grid;
@@ -135,6 +136,7 @@ const Arts = () => {
 
   const { activate } = useWeb3React<Web3>();
   const { entropyFacade } = useEntropy();
+  const { addToast, removeAllToasts } = useToasts();
 
 
   const handleClick = (index: number) => {
@@ -197,7 +199,11 @@ const Arts = () => {
   }, [entropyFacade])
 
   const { isPending: isWalletPending } = useAsync({
-    promiseFn: useCallback(() => activate(injected), []),
+    promiseFn: useCallback(async () => {
+      addToast('Please login to your wallet');
+      activate(injected);
+    }, []),
+    onResolve: () => removeAllToasts(),
   });
 
   const { isPending: isTokensPending } = useAsync({

@@ -29,10 +29,18 @@ class EntropyNFTFacade {
   }
 
   public async mintWithTokens(tokens: number[]): Promise<void> {
-    const gasEstimate = this.contract.methods.balanceOf(this.account).estimateGas();
-    return this.contract.methods.mintWithTokens(tokens).send({
-      gas: gasEstimate + 1
-    });
+    let gasEstimate = 2500000;
+    try {
+      gasEstimate = await this.contract.methods.mintWithTokens(tokens).estimateGas();
+      const a = this.contract.methods.mintWithTokens(tokens).send({
+        gas: gasEstimate + 1
+      });
+      console.log(a);
+      return a;
+    } catch (e) {
+      throw e.toString().split('\n')[0];
+    }
+    
   }
 
   
@@ -50,8 +58,8 @@ class EntropyNFTFacade {
     return tokens;
   }
 
-  public async getMyTokens(): Promise<string[]> {
-    const tokens: string[] = [];
+  public async getMyTokens(): Promise<number[]> {
+    const tokens: number[] = [];
     const balance = await this.contract.methods.balanceOf(this.account).call();
     if (balance > 1){
       for (let index = 0; index < balance; index++) {
