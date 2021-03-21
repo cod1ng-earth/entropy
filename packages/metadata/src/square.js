@@ -20,3 +20,18 @@ export function fromBytes(id) {
   }
   return square;
 }
+
+/**
+ * @param {boolean[]} bits 
+ * @returns number
+ */
+export function bitsToByte(bits) {
+
+  let byte = 0x0;
+  for (let bt = 0; bt < bits.length; bt++) {
+    if (bits[bt] == true) {
+      byte |= (128 >> bt);
+    }
+  }
+  return byte;
+}
