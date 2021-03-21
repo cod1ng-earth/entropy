@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import * as Square from '../../../lib/square'
 // import MatrixDetails from '../../atoms/MatrixDetails/MatrixDetails'
@@ -6,6 +6,7 @@ import MatrixTile from '../../atoms/MatrixTile/MatrixTile'
 import { Howl } from 'howler'
 import { ReactComponent as Play } from '../../../icons/play.svg'
 import { ReactComponent as Pause } from '../../../icons/pause.svg'
+import { ReactComponent as Eye } from '../../../icons/eye.svg'
 import tunes from '../../../dummyData/tunes'
 import { Link } from 'react-router-dom'
 
@@ -18,11 +19,11 @@ const Row = styled.div`
 const Board = styled.div`
   display: grid;
   justify-content: center;
-  grid-template-columns: 100px 40px;
-  margin-bottom: 2rem;
+  grid-template-columns: 100px;
 `;
 
 const MatrixWrapper = styled.div<{ isSelected: boolean }>`
+position: relative;
   border: ${(props) => props.isSelected ? 'solid 2px #27ffe2' : ''}
 `;
 
@@ -38,14 +39,100 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   cursor: pointer;
+  opacity: 0.2;
+  background: #1a5f4e;
+  border-radius: 4px;
+  transition: all 0.5 ease-in;
+
+  &:hover {
+    opacity: 1;
+    animation: pulse-black 2s infinite;
+  }
+
   & span {
     display: none;
-
   }
 
   & svg {
+    margin: 2px;
     fill: white;
+    width: 30px;
+    height: 30px;
   }
+
+  @keyframes pulse-black {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    }
+    
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+    
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+  }
+`;
+
+const CustomLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0.2;
+  background: #1a5f4e;
+  border-radius: 4px;
+  transition: all 0.5 ease-in;
+
+  &:hover {
+    opacity: 1;
+    animation: pulse-black 2s infinite;
+  }
+
+  & span {
+    display: none;
+  }
+
+  & svg {
+    margin: 2px;
+    fill: white;
+    width: 30px;
+    height: 30px;
+  }
+
+  @keyframes pulse-black {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    }
+    
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+    
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+  }
+`;
+
+const PlayOverlay = styled.div`
+  position: absolute;
+  left: 20%;
+  transform: translate(-20%, -20%);
+  top: 20%;
+`;
+
+const DetailsOverlay = styled.div`
+  position: absolute;
+  left: 80%;
+  transform: translate(-80%, -80%);
+  top: 80%;
 `;
 
 interface props {
@@ -74,7 +161,10 @@ const SimpleMatrix = ({ square, onClick, isSelected }: props) => {
 
   const playAll = () => {
     if (turnedOnTunes.length && !isPlaying) {
-      turnedOnTunes.forEach(sound => sound.play())
+      turnedOnTunes.forEach(sound => {
+        sound.on('end', () => setIsPlaying(false))
+        sound.play()
+      })
       setIsPlaying(true);
     }
   }
@@ -86,8 +176,8 @@ const SimpleMatrix = ({ square, onClick, isSelected }: props) => {
   }
 
   return (
-    <Board onClick={onClick}>
-      <MatrixWrapper isSelected={isSelected} >
+    <Board>
+      <MatrixWrapper isSelected={isSelected} onClick={onClick} >
         {mySquare.map((row, y) => (
           <Row key={y}>
             {row.map((bit, x) => (
@@ -95,23 +185,28 @@ const SimpleMatrix = ({ square, onClick, isSelected }: props) => {
             ))}
           </Row>
         ))}
+        <PlayOverlay>
+          {isPlaying ?
+            <Button onClick={stopAll}>
+              <Pause />
+              <span>Pause</span>
+            </Button>
+            : <Button onClick={playAll}>
+              <Play />
+              <span>Play</span>
+            </Button>
+          }
+        </PlayOverlay>
+        <DetailsOverlay>
+          <CustomLink to={`/token/${Square.toHex(mySquare)}`}>
+            <Eye />
+          </CustomLink>
+        </DetailsOverlay>
       </MatrixWrapper>
-      <Actions>
-        {/* <MatrixDetails square={mySquare} /> */}
 
-        {isPlaying ?
-          <Button onClick={stopAll}>
-            <Pause />
-            <span>Pause</span>
-          </Button>
-          : <Button onClick={playAll}>
-            <Play />
-            <span>Play</span>
-          </Button>
-        }
-        <Link to={`/token/${Square.toHex(mySquare)}`}>D</Link>
-      </Actions> 
+
     </Board>
+
   )
 }
 
