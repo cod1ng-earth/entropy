@@ -1,15 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import Matrix from '../../molecules/Matrix/Matrix'
-import * as Square from '../../../lib/square'
-import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
-import Web3 from 'web3'
-import { injected } from '../../../connectors/connectors'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import intToBuffer from '../../../lib/intToBuffer'
+import { useToasts } from 'react-toast-notifications'
+import styled from 'styled-components'
+import Web3 from 'web3'
 import { useEntropy } from '../../../context/Entropy'
-import { useToasts } from 'react-toast-notifications';
-import { useAsync } from 'react-async';
+import * as Square from '../../../lib/square'
+import Matrix from '../../molecules/Matrix/Matrix'
 
 const Headline = styled.h1`
   font-size: 36px;
@@ -34,16 +31,15 @@ const Token = () => {
   const { id } = useParams<{ id: string }>();
 
   const [mx, setMx] = useState<Square.Square>([]);
-
-
   
   useEffect(() => {
-    setMx(Square.fromBytes(intToBuffer(parseInt(id, 16))));
-  }, [])
+    const square = Square.fromBytes(Buffer.from(id, 'hex'));
+    setMx(square);
+  }, [id])
   
   return (
     <div>
-      <Headline>Token</Headline>
+      <Headline>Entropy 0x{id}</Headline>
       <Matrix square={mx} isMintable={false} isSelectable={false} />
     </div>
   )
