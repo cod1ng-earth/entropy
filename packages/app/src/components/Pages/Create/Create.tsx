@@ -43,7 +43,6 @@ const Create = () => {
       <Headline>Entropy</Headline>
       <Subtitle>This will be here until we come up with somthing</Subtitle>
       <Matrix square={mx1} />
-      <button onClick={mint}>Mint</button>
     </div>
   )
 }

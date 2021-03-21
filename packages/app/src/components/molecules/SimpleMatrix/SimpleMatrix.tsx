@@ -89,7 +89,7 @@ const SimpleMatrix = ({ square, onClick, isSelected }: props) => {
         {mySquare.map((row, y) => (
           <Row key={y}>
             {row.map((bit, x) => (
-              <MatrixTile key={x} on={bit} tune={tunes[x][y]} sm={true} />
+              <MatrixTile key={x} on={bit} tune={tunes[x % 8][y % 8]} sm={true} />
             ))}
           </Row>
         ))}

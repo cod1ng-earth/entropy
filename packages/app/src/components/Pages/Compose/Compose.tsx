@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import * as Square from '../../../lib/square'
 import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
@@ -8,8 +8,11 @@ import SimpleMatrix from '../../molecules/SimpleMatrix/SimpleMatrix'
 import { ReactComponent as And } from '../../../icons/and.svg'
 import { ReactComponent as Xor } from '../../../icons/xor.svg'
 import { ReactComponent as Or } from '../../../icons/or.svg'
-import { ReactComponent as Clear } from '../../../icons/clear.svg'
 import Matrix from '../../molecules/Matrix/Matrix'
+import { useEntropy } from '../../../context/Entropy'
+import { useAsync } from 'react-async';
+import BN from 'bn.js'
+import { useToasts } from 'react-toast-notifications';
 
 const Button = styled.button`
   display: flex;
@@ -51,46 +54,38 @@ const Actions = styled.div`
 
 
 const Compose = () => {
-
-const mx1 = Square.fromText(`10000001
-01000010
-00111100
-00100100
-00100100
-00111100
-01000010
-10000001`)
-
-const mx2 = Square.fromText(`10000001
-00000000
-00000000
-00100100
-01000010
-01000010
-11111111
-10000001`)
-
-const mx3 = Square.fromText(`00000000
-00000000
-00000000
-00100100
-00000000
-00000000
-00000000
-10000001`)
-
-  const { connector, library, chainId, account, activate, deactivate, active, error } = useWeb3React<Web3>();
-
-  const [tokens] = useState([{mx: mx1, id:1}, {mx:mx2, id:2}, {mx: mx3, id: 3}]);
+  const [tokens, setTokens] = useState<Array<{ mx: Square.Square, id: number }>>([]);
+  const [tokenIds, setTokenIds] = useState<Array<{ tokenId: number, id: number }>>([]);
   const [selected, setSelected] = useState<Record<number, boolean>>({});
   const [showActions, setShowActions] = useState<boolean>(false);
   const [composedSquare, setComposedSquare] = useState<Square.Square>([]);
-  const [showClear, setShowClear] = useState<boolean>(false);
+  // const [showClear, setShowClear] = useState<boolean>(false);
+  const [isMinting, setIsMinting] = useState<boolean>(false);
+
+  const { activate } = useWeb3React<Web3>();
+  const { entropyFacade } = useEntropy();
+  const { addToast, removeAllToasts } = useToasts();
 
 
-  const mint = () => {
-    activate(injected);
-    // TODO: call mint function
+  const handleMint = async (): Promise<void> => {
+    if (entropyFacade) {
+      setIsMinting(true);
+      const _tokenIds: number[] = [];
+      for (const item in selected) {
+
+        if (selected[item]) {
+          _tokenIds.push(tokenIds[item].tokenId);
+        }
+      }
+      try {
+        await entropyFacade.mintWithTokens(_tokenIds);
+      } catch (e) {
+        addToast(e, { appearance: 'error' });
+      }
+      setIsMinting(false);
+      handleClear();
+      refetchMyTokens();
+    }
   }
 
   const handleClick = (index: number) => {
@@ -101,70 +96,118 @@ const mx3 = Square.fromText(`00000000
   const handleOperation = (op: Square.Operation): void => {
     const selectedTokens = [];
     for (const item in selected) {
-      
+
       if (selected[item]) {
         selectedTokens.push(JSON.parse(JSON.stringify(tokens[item].mx)));
       }
     }
-    
+
     setComposedSquare(Square.operate(selectedTokens, op));
-    setShowActions(false);
-    setShowClear(true);
   }
 
   const handleClear = () => {
     setComposedSquare([]);
-    setShowActions(true);
-    setShowClear(false);
   }
 
   useEffect(() => {
     let numberOfSelection = 0;
     for (const item in selected) {
-      
+
       if (selected[item]) {
         numberOfSelection += 1;
       }
     }
-      setShowActions(numberOfSelection > 1);
-      setComposedSquare([]);
-      setShowClear(false);
+    setShowActions(numberOfSelection > 1);
+    setComposedSquare([]);
 
-    }, [selected])
+  }, [selected])
+
+  const fetchMyTokens = useCallback(async () => {
+    if (entropyFacade) {
+      const rawTokens: any = [];
+      const artTokens: any = [];
+      const all = await entropyFacade.getMyTokens();
+      all.forEach((num: number, index: number) => {
+
+        const bn = new BN(num, 10);
+        let buf;
+        try {
+          buf = bn.toArrayLike(Buffer, 'le', 8);
+        } catch {
+          buf = bn.toArrayLike(Buffer, 'le', 16);
+        }
+
+        const sq = Square.fromBytes(buf);
+
+        artTokens.push({ id: index, mx: sq })
+        rawTokens.push({ id: index, tokenId: num })
+      })
+      setTokens(artTokens);
+      setTokenIds(rawTokens);
+    }
+
+  }, [entropyFacade])
+
+  const { isPending: isWalletPending } = useAsync({
+    promiseFn: useCallback(async () => {
+      addToast('Please login to your wallet');
+      activate(injected);
+    }, []),
+    onResolve: () => removeAllToasts(),
+  });
+
+  const { isPending: isTokensPending, reload: refetchMyTokens } = useAsync({
+    promiseFn: fetchMyTokens,
+  });
+
+  useAsync({
+    deferFn: handleMint,
+  });
 
   return (
-    <div>
-      <Headline>Compose stuff here</Headline>
-      <Subtitle>Blah blah</Subtitle>
-      <Tokens>
-        {tokens.map((token, index) => (
-          <SimpleMatrix key={token.id} square={token.mx} onClick={() => handleClick(index)} isSelected={selected[index]} />
-        ))}
-      </Tokens>
-      {showActions &&
-        <Actions>
-          <Button onClick={() => handleOperation(Square.xor)}>
-            <Xor />
-          </Button>
-          <Button onClick={() => handleOperation(Square.and)}>
-            <And />
-          </Button>
-          <Button onClick={() => handleOperation(Square.or)}>
-            <Or />
-          </Button>
-        </Actions>
+    <React.Fragment>
+      {!isWalletPending &&
+        <div>
+          <Headline>Compose stuff here</Headline>
+          <Subtitle>Blah blah</Subtitle>
+          {isTokensPending && <span>Loading...</span>}
+          {!isTokensPending && tokens.length > 0 &&
+            <Tokens>
+              {tokens.map((token, index) => (
+                <SimpleMatrix key={token.id} square={token.mx} onClick={() => handleClick(index)} isSelected={selected[index]} />
+              ))}
+            </Tokens>
+          }
+          {showActions &&
+            <Actions>
+              <Button onClick={() => handleOperation(Square.xor)}>
+                <Xor />
+              </Button>
+              <Button onClick={() => handleOperation(Square.and)}>
+                <And />
+              </Button>
+              <Button onClick={() => handleOperation(Square.or)}>
+                <Or />
+              </Button>
+            </Actions>
+          }
+          {/* {showClear &&
+            <Actions>
+              <Button onClick={handleClear}>
+                <Clear />
+              </Button>
+            </Actions>
+          } */}
+          {composedSquare.length > 0 && !isMinting &&
+            <Matrix square={composedSquare} isSelectable={false} onMint={handleMint} />
+          }
+          {isMinting &&
+            <span>minting in progress</span>
+          }
+        </div>
       }
-      {showClear &&
-        <Actions>
-          <Button onClick={handleClear}>
-            <Clear />
-          </Button>
-        </Actions>
-      }
-      {composedSquare.length > 0 && 
-        <Matrix square={composedSquare} isSelectable={false} />
-      }
-    </div>
+    </React.Fragment>
+
   )
 }
 

@@ -87,7 +87,8 @@ export function fromBytes(id: Buffer): Square {
         res += byte2bin(byte);
     }
 
-    const size = Math.sqrt(res.length);
+    
+    const size = Math.floor(Math.sqrt(res.length));
     const square = new Array<Array<boolean>>(size);
     for (let y = 0; y < size; y++) {
         square[y] = new Array<boolean>(size);
@@ -134,7 +135,7 @@ export function toBinArray(square: Square): number[] {
     return ret;
 }
 
-function byte2bin(byte: number): string {
+export function byte2bin(byte: number): string {
     const binary = (byte >>> 0).toString(2);
     const padded = String("0".repeat(8) + binary).slice(-8);
     return padded;
