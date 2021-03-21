@@ -80,7 +80,7 @@ const Matrix = ({ square, isSelectable, onMint, isMintable }: props) => {
     mySquare.forEach((row, y) => {
       row.forEach((tile, x) => {
         if (tile) {
-          _turnedOnTunes.push(tunes[x][y])
+          _turnedOnTunes.push(tunes[x % 8][y % 8])
         }
       })
     })
