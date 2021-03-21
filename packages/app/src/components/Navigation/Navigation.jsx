@@ -3,11 +3,13 @@ import { Switch, Route } from 'react-router-dom';
 import Create from '../Pages/Create/Create';
 import Compose from '../Pages/Compose/Compose';
 import Arts from '../Pages/Arts/Arts';
+import Token from '../Pages/Token/Token';
 
 const Navigation = () => {
   return (
     <Switch>
-      <Route path="/arts/{id}">
+      <Route path="/token/:id">
+        <Token />
       </Route>
       <Route path="/create">
         <Create />
