@@ -2,6 +2,7 @@
   "name": "@entropy/app",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://entropy-elmariachi.vercel.app",
   "dependencies": {
     "@apollo/client": "^3.3.12",
     "@testing-library/jest-dom": "^5.11.4",

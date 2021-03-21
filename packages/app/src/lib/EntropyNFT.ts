@@ -43,7 +43,9 @@ class EntropyNFTFacade {
     
   }
 
-  
+  public async getTokenUri(tokenid: number): Promise<string> {
+    return this.contract.methods.tokenURI(tokenid).call();
+  }
 
 
   public async getAllTokens(): Promise<number[]> {
