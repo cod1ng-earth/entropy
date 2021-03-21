@@ -41,7 +41,7 @@ const Create = () => {
   return (
     <div>
       <Headline>Entropy</Headline>
-      <Subtitle>This will be here until we come up with somthing</Subtitle>
+      <Subtitle>Collaboratively mine NFTs for generative arts</Subtitle>
       <Matrix square={mx1} isMintable={true} />
     </div>
   )
