@@ -15,30 +15,18 @@ const useEntropy = (): IEntropyFacade => useContext(EntropyContext);
 
 const useEntropyProvider = (): IEntropyFacade => {
   const [entropyFacade, setEntropyFacade] = useState<EntopyFacade | null>(null);
-  const [web3Instance, setWeb3] = useState<Web3|null>(null);
   
-  const { connector, account } = useWeb3React<Web3>();
+  const { account, library } = useWeb3React<Web3>();
 
-
-  useEffect(() => {
-    (async () => {
-      const prov = await connector?.getProvider();
-      setWeb3(new Web3(prov));
-      console.log('web 3');
-      
-    })();
-  }, [])
 
   useEffect((): void => {
     
-    if (account && web3Instance) {
-      console.log('here', web3Instance);
-      
+    if (account && library) {
       setEntropyFacade(
-        new EntopyFacade(web3Instance, account, process.env.REACT_APP_CONTRACT_ADDRESS || ''),
+        new EntopyFacade(library, account, process.env.REACT_APP_CONTRACT_ADDRESS || ''),
       );
     }
-  }, [account, web3Instance]);
+  }, [account, library]);
 
   return {
     entropyFacade,

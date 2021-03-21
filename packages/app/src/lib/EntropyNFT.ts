@@ -35,8 +35,22 @@ class EntropyNFTFacade {
     });
   }
 
+  
 
-  public async getTokens(): Promise<string[]> {
+
+  public async getAllTokens(): Promise<number[]> {
+    const tokens: number[] = [];
+    const balance = await this.contract.methods.totalSupply().call();
+    if (balance > 1){
+      
+      for (let index = 0; index < balance; index++) {
+        tokens.push(await this.contract.methods.tokenByIndex(index).call());
+      }
+    }
+    return tokens;
+  }
+
+  public async getMyTokens(): Promise<string[]> {
     const tokens: string[] = [];
     const balance = await this.contract.methods.balanceOf(this.account).call();
     if (balance > 1){

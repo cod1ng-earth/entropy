@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import * as Square from '../../../lib/square'
 import SimpleMatrix from '../../molecules/SimpleMatrix/SimpleMatrix'
@@ -6,10 +6,16 @@ import { ReactComponent as And } from '../../../icons/and.svg'
 import { ReactComponent as Xor } from '../../../icons/xor.svg'
 import { ReactComponent as Or } from '../../../icons/or.svg'
 import Matrix from '../../molecules/Matrix/Matrix'
+import { useEntropy } from '../../../context/Entropy'
+import { useWeb3React } from '@web3-react/core'
+import Web3 from 'web3'
+import { injected } from '../../../connectors/connectors'
+import { useAsync } from 'react-async'
+import BN from 'bn.js';
 
 const List = styled.ul`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
 `
 
 const Filter = styled.div`
@@ -121,71 +127,15 @@ const CloseButton = styled.span`
   cursor: pointer;
   `;
 
-const initialArts = () => {
-  return [
-    {
-      artist: '0xa',
-      price: '2.05',
-      name: 'fuzzy',
-      id: 'b44861ea32a51021',
-      mx: Square.fromText(`11111111
-      01000010
-      00111100
-      00100100
-      00100100
-      00111100
-      01000010
-      10000001`),
-    },
-    {
-      artist: '0xb',
-      price: '2.05',
-      name: 'dreamy',
-      id: 'b44861ea32a51022',
-      mx: Square.fromText(`10000001
-      01000010
-      00000000
-      00000000
-      00000000
-      00000000
-      01000010
-      10000001`),
-    },
-    {
-      artist: '0xc',
-      price: '2.05',
-      name: 'shitty',
-      id: 'b44861ea32a5143',
-      mx: Square.fromText(`10000001
-      01000010
-      00000001
-      00000001
-      00000001
-      00000001
-      01000010
-      10000001`),
-    },
-    {
-      artist: '0xd',
-      price: '2.05',
-      name: 'pulsy',
-      id: 'b44861ea32a5153',
-      mx: Square.fromText(`00000000
-      01000010
-      00000001
-      01000001
-      01000001
-      01000001
-      01000010
-      00000000`),
-    },
-  ]
-}
 const Arts = () => {
-  const [arts, setArts] = useState(initialArts())
+  const [arts, setArts] = useState<Array<{ mx: Square.Square, id: number }>>([])
   const [showActions, setShowActions] = useState(false)
   const [selected, setSelected] = useState<Record<number, boolean>>({});
   const [composedSquare, setComposedSquare] = useState<Square.Square>([]);
+
+  const { activate } = useWeb3React<Web3>();
+  const { entropyFacade } = useEntropy();
+
 
   const handleClick = (index: number) => {
     const newSelected = { ...selected, [index]: !selected[index] };
@@ -223,54 +173,85 @@ const Arts = () => {
 
   }, [selected])
 
+  const fetchAllTokens = useCallback(async () => {
+    if (entropyFacade) {
+      const artTokens: any = [];
+      const all = await entropyFacade.getAllTokens();
+      all.forEach((num: number, index: number) => {
+
+        const bn = new BN(num, 10);
+        let buf;
+        try {
+          buf = bn.toArrayLike(Buffer, 'le', 8);
+        } catch {
+          buf = bn.toArrayLike(Buffer, 'le', 16);
+        }
+        
+        const sq = Square.fromBytes(buf);
+        
+        artTokens.push({ id: index, mx: sq })
+      })
+      setArts(artTokens);
+    }
+
+  }, [entropyFacade])
+
+  const { isPending: isWalletPending } = useAsync({
+    promiseFn: useCallback(() => activate(injected), []),
+  });
+
+  const { isPending: isTokensPending } = useAsync({
+    promiseFn: fetchAllTokens,
+  });
+
   return (
     <React.Fragment>
-      <Filter>
-        <select>
-          <option>All tokens</option>
-          <option>My tokens</option>
-        </select>
-      </Filter>
-      <List>
-        {arts.map((art, index) => (
-          <ArtPiece isSelected={selected[index]} key={art.id} onClick={() => handleClick(index)}>
-            <SimpleMatrix key={art.id} square={art.mx} onClick={() => null} isSelected={false} />
-            <Artist>
-              <h2>Artist:&nbsp;</h2>
-              <span>{art.artist}</span>
-            </Artist>
-            <Price>
-              <h2>Price&nbsp;</h2>
-              <span>Ξ&nbsp;{art.price}</span>
-            </Price>
-            <Name>{art.name}</Name>
-          </ArtPiece>
-        ))}
-        {showActions && (
-          <FabIconList>
-            <Button onClick={() => handleOperation(Square.xor)}>
-              <Xor />
-            </Button>
-            <Button onClick={() => handleOperation(Square.and)}>
-              <And />
-            </Button>
-            <Button onClick={() => handleOperation(Square.or)}>
-              <Or />
-            </Button>
-          </FabIconList>
-        )}
-        {composedSquare.length > 0 &&
-          <Modal >
+      {isWalletPending && <div>Please login to your wallet</div>}
+      {!isWalletPending &&
+        <React.Fragment>
+
+          <Filter>
+            <select>
+              <option>All tokens</option>
+              <option>My tokens</option>
+            </select>
+          </Filter>
+          <List>
+            {isTokensPending && <span>Loading</span>}
+            {!isTokensPending && arts.length > 0 &&
+              arts.map((art, index) => (
+                <ArtPiece isSelected={selected[index]} key={art.id} onClick={() => handleClick(index)}>
+                  <SimpleMatrix square={art.mx} onClick={() => null} isSelected={false} />
+
+                </ArtPiece>
+              ))}
+            {showActions && (
+              <FabIconList>
+                <Button onClick={() => handleOperation(Square.xor)}>
+                  <Xor />
+                </Button>
+                <Button onClick={() => handleOperation(Square.and)}>
+                  <And />
+                </Button>
+                <Button onClick={() => handleOperation(Square.or)}>
+                  <Or />
+                </Button>
+              </FabIconList>
+            )}
+            {composedSquare.length > 0 &&
+              <Modal >
 
 
-            <ModalContent>
-              <CloseButton onClick={closeModal}>&times;</CloseButton>
-              <Matrix square={composedSquare} isSelectable={false} />
-            </ModalContent>
+                <ModalContent>
+                  <CloseButton onClick={closeModal}>&times;</CloseButton>
+                  <Matrix square={composedSquare} isSelectable={false} />
+                </ModalContent>
 
-          </Modal>
-        }
-      </List>
+              </Modal>
+            }
+          </List>
+        </React.Fragment>
+      }
     </React.Fragment>
   )
 }
