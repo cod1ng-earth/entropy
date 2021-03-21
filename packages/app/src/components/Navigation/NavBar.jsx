@@ -6,6 +6,8 @@ const Nav = styled.nav`
   height: 60px;
   display: flex;
   align-items: center;
+  margin-left: 1rem;
+  margin-right: 1rem;
 
   @media (min-width: 1280px) {
     margin: 0 auto;

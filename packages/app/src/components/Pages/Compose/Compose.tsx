@@ -13,6 +13,16 @@ import { useEntropy } from '../../../context/Entropy'
 import { useAsync } from 'react-async';
 import { useToasts } from 'react-toast-notifications';
 import intToBuffer from '../../../lib/intToBuffer';
+
+const Container = styled.div`
+padding-left: 1rem;
+padding-right: 1rem;
+@media (min-width: 1280px) {
+  padding-left: 0;
+  padding-right: 0;
+}
+`;
+
 const Button = styled.button`
   display: flex;
   align-items: center;
@@ -44,6 +54,7 @@ const Tokens = styled.div`
   margin-top: 2rem;
   display: flex;
   flex-wrap:wrap;
+  gap: 15px;
 `;
 
 const Actions = styled.div`
@@ -165,7 +176,7 @@ const Compose = () => {
   return (
     <React.Fragment>
       {!isWalletPending &&
-        <div>
+        <Container>
           <Headline>Compose</Headline>
           <Subtitle>Select some of your tokens to mint a new one.</Subtitle>
           <Subtitle>start by selecting multiple tokens:</Subtitle>
@@ -200,7 +211,7 @@ const Compose = () => {
           {isMinting &&
             <span>minting in progress</span>
           }
-        </div>
+        </Container>
       }
     </React.Fragment>
 
