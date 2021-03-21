@@ -8,6 +8,7 @@ function erc721MetaData(tokenId) {
     "description": "Entropy tokens let you own the seed for generative art",
     "external_url": `https://entropy.on.fleek.co/#/token/${tokenId}`,
     "image": `https://entropy-elmariachi.vercel.app/image/${tokenId}.png`,
+    "fancy_image": `https://entropy-elmariachi.vercel.app/fancy/${tokenId}.png`,
     "attributes": [
       { "trait_type": "KIND", "key": "KIND", value: "Entropy" }
     ]
