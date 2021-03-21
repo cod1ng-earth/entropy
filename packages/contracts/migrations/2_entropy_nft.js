@@ -1,3 +1,5 @@
+require('dotenv-flow').config();
+
 const Entropy = artifacts.require("EntropyNFT");
 
 module.exports = async function (deployer) {
