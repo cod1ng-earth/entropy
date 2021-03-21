@@ -116,7 +116,7 @@ const Matrix = ({ square, isSelectable, onMint, isMintable }: props) => {
         {mySquare.map((row, y) => (
           <Row key={y}>
             {row.map((bit, x) => (
-              <MatrixTile key={x} on={bit} onClick={() => toggle(x, y)} tune={tunes[x % 8][y % 8]} />
+              <MatrixTile key={x} on={bit} onClick={() => toggle(x, y)} tune={tunes[x % 8][y % 8]} isSelectable={isSelectable}/>
             ))}
           </Row>
         ))}

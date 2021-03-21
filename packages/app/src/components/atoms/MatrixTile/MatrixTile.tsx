@@ -7,6 +7,7 @@ interface Props {
   onClick?: () => void;
   tune: Howl;
   sm: boolean;
+  isSelectable: boolean;
 }
 
 const Tile = styled.div<{ on: boolean, sm: boolean }>`
@@ -20,15 +21,14 @@ const Tile = styled.div<{ on: boolean, sm: boolean }>`
     background: #b6b6b6;
   }
 `
-
-const MatrixTile = ({ on, onClick, tune, sm }: Props) => {
-
-
+const MatrixTile = ({ on, onClick, tune, sm, isSelectable }: Props) => {
   const playToggle = () => {
-    if (!on) {
-      tune?.play()
-    } else {
-      tune.stop();
+    if (isSelectable){
+      if (!on) {
+        tune?.play()
+      } else {
+        tune.stop();
+      }
     }
   }
 
