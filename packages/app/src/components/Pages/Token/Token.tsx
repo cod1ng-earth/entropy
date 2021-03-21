@@ -82,9 +82,9 @@ const Token = () => {
   });
 
   return (
-    <div onClick={toggle}>
+    <div>
       <Headline>Entropy 0x{id}</Headline>
-      <Subtitle>click here to see the Entropy Art</Subtitle>
+      <Subtitle onClick={toggle}>click here to see the Entropy Art</Subtitle>
       {page === 0 &&
         <Matrix square={mx} isMintable={false} isSelectable={false} />
       }
