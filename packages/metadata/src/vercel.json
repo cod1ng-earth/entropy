@@ -12,5 +12,16 @@
       "source": "/token/:id*.json",
       "destination": "/api/token?id=:id*"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "access-control-allow-origin",
+          "value": "*"
+        }
+      ]
+    }
   ]
 }

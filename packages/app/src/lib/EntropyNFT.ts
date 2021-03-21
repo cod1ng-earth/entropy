@@ -28,7 +28,7 @@ class EntropyNFTFacade {
     );
   }
 
-  public async mintWithTokens(tokens: number[]): Promise<void> {
+  public async mintWithTokens(tokens: string[]): Promise<void> {
     let gasEstimate = 2500000;
     try {
       gasEstimate = await this.contract.methods.mintWithTokens(tokens).estimateGas();
@@ -43,13 +43,13 @@ class EntropyNFTFacade {
     
   }
 
-  public async getTokenUri(tokenid: number): Promise<string> {
+  public async getTokenUri(tokenid: string): Promise<string> {
     return this.contract.methods.tokenURI(tokenid).call();
   }
 
 
-  public async getAllTokens(): Promise<number[]> {
-    const tokens: number[] = [];
+  public async getAllTokens(): Promise<string[]> {
+    const tokens: string[] = [];
     const balance = await this.contract.methods.totalSupply().call();
     if (balance > 1){
       
@@ -60,8 +60,8 @@ class EntropyNFTFacade {
     return tokens;
   }
 
-  public async getMyTokens(): Promise<number[]> {
-    const tokens: number[] = [];
+  public async getMyTokens(): Promise<string[]> {
+    const tokens: string[] = [];
     const balance = await this.contract.methods.balanceOf(this.account).call();
     if (balance > 1){
       for (let index = 0; index < balance; index++) {
@@ -71,6 +71,13 @@ class EntropyNFTFacade {
     return tokens;
   }
 
+  public hexToBn(hex: string) {
+    return this.web3.utils.toBN(hex);
+  }
+
+  public idToBn(id: string) {
+    return this.web3.utils.toBN(id);
+  }
 }
 
 export default EntropyNFTFacade;

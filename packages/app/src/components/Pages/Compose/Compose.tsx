@@ -63,7 +63,7 @@ const ActionWrapper = styled.div`
 
 const Compose = () => {
   const [tokens, setTokens] = useState<Array<{ mx: Square.Square, id: number }>>([]);
-  const [tokenIds, setTokenIds] = useState<Array<{ tokenId: number, id: number }>>([]);
+  const [tokenIds, setTokenIds] = useState<Array<{ tokenId: string, id: string }>>([]);
   const [selected, setSelected] = useState<Record<number, boolean>>({});
   const [showActions, setShowActions] = useState<boolean>(false);
   const [composedSquare, setComposedSquare] = useState<Square.Square>([]);
@@ -78,9 +78,8 @@ const Compose = () => {
   const handleMint = async (): Promise<void> => {
     if (entropyFacade) {
       setIsMinting(true);
-      const _tokenIds: number[] = [];
+      const _tokenIds: string[] = [];
       for (const item in selected) {
-
         if (selected[item]) {
           _tokenIds.push(tokenIds[item].tokenId);
         }
@@ -135,7 +134,7 @@ const Compose = () => {
       const rawTokens: any = [];
       const artTokens: any = [];
       const all = await entropyFacade.getMyTokens();
-      all.forEach((num: number, index: number) => {
+      all.forEach((num: string, index: number) => {
         const sq = Square.fromBytes(intToBuffer(num));
 
         artTokens.push({ id: index, mx: sq })

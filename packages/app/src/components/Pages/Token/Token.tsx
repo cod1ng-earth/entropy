@@ -40,32 +40,46 @@ const Token = () => {
   const { addToast, removeAllToasts } = useToasts();
 
   const { id } = useParams<{ id: string }>();
-
+  const [bnId, setBnId] = useState<any>();
   const [mx, setMx] = useState<Square.Square>([]);
   const [metadata, setMetadata] = useState<{ fancy_image?: string, image?: string }>({});
   const [page, setPage] = useState(0);
 
   useEffect(() => {
-    const square = Square.fromBytes(Buffer.from(id, 'hex'));
-    setMx(square);
-  }, [id])
-
-  const fetchTokenUri = useCallback(async () => {
     if (entropyFacade) {
-      const _tokenUir = await (await entropyFacade.getTokenUri(parseInt(id, 16))).replace('https://entropy-elmariachi.vercel.app', '');
-      const response = await fetch(_tokenUir)
-      const _metadata = await response.json();
-
-      setMetadata(_metadata);
-
+      const square = Square.fromBytes(Buffer.from(id, 'hex'));
+      const _bnId = entropyFacade.hexToBn(`0x${Square.toHex(square)}`);
+      setBnId(_bnId);
+      setMx(square);
     }
-  }, [entropyFacade])
+  }, [id, entropyFacade])
+
+  useEffect(() => {
+    if (bnId) {
+      (async () => {
+          console.log(id);
+          //.replace('https://entropy-elmariachi.vercel.app', '')
+          let _tokenUri;
+          try {
+            _tokenUri = await entropyFacade!.getTokenUri(bnId.toString());
+          } catch (e) {
+            _tokenUri = `https://entropy-elmariachi.vercel.app/token/0x${id}.json`
+          }
+                    
+          console.log(_tokenUri)
+          const response = await fetch(_tokenUri)
+          const _metadata = await response.json();
+          console.log(_metadata);
+          setMetadata(_metadata);
+      })();
+    }
+  }, [bnId]);
+
 
   const toggle = () => {
     if (Object.keys(metadata).length) {
       const nextPage = page + 1
-      // TODO: too see the fancy image, change 2 to 3
-      setPage(nextPage % 2)
+      setPage(nextPage % 3)
     }
   }
 
@@ -77,14 +91,15 @@ const Token = () => {
     onResolve: () => removeAllToasts(),
   });
 
-  useAsync({
-    promiseFn: fetchTokenUri,
-  });
+  // useAsync({
+  //   promiseFn: fetchTokenUri,
+  // });
 
   return (
     <div>
       <Headline>Entropy 0x{id}</Headline>
       <Subtitle onClick={toggle}>click here to see the Entropy Art</Subtitle>
+      <Subtitle> {bnId?.toString()}</Subtitle>
       {page === 0 &&
         <Matrix square={mx} isMintable={false} isSelectable={false} />
       }
