@@ -65,7 +65,7 @@ contract EntropyNFT is ERC721, Ownable {
             );
             result = operateOr(result, tokenIds[i]);
         }
-        _mint(msg.sender, result);
+        _safeMint(msg.sender, result);
     }
 
     function tokenURI(uint256 tokenId)
