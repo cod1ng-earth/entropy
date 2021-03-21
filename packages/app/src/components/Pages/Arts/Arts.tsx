@@ -183,7 +183,7 @@ const Arts = () => {
     if (entropyFacade) {
       const artTokens: any = [];
       const all = await entropyFacade.getAllTokens();
-      all.forEach((num: number, index: number) => {
+      all.forEach((num: string, index: number) => {
         const sq = Square.fromBytes(intToBuffer(num));
 
         artTokens.push({ id: index, mx: sq })
@@ -197,7 +197,10 @@ const Arts = () => {
     if (entropyFacade) {
       const artTokens: any = [];
       const all = await entropyFacade.getMyTokens();
-      all.forEach((num: number, index: number) => {
+      all.forEach((num: string, index: number) => {
+        //const bnId = entropyFacade.idToBn(num);
+        //const hx = bnId.toBuffer().toString('hex');
+        //const sq = Square.fromBytes(bnId.toBuffer());
         const sq = Square.fromBytes(intToBuffer(num));
 
         artTokens.push({ id: index, mx: sq })
