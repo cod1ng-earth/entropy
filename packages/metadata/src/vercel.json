@@ -5,8 +5,12 @@
       "destination": "/api/image?id=:id*"
     },
     {
+      "source": "/geometric/:id*.png",
+      "destination": "/api/image?render=geometric&id=:id*"
+    },
+    {
       "source": "/fancy/:id*.png",
-      "destination": "/api/image?render=fancy&id=:id*"
+      "destination": "/api/image?render=emily&id=:id*"
     },
     {
       "source": "/token/:id*.json",

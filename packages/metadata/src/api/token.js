@@ -1,4 +1,4 @@
-const Square = require('../square');
+const Square = require('../lib/square');
 
 function erc721MetaData(tokenId) {
   //const square = Square.fromBytes(Buffer.from(id, 'hex'));
