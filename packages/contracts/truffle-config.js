@@ -27,8 +27,6 @@ require('dotenv-flow').config();
 
 var PrivateKeyProvider = require("truffle-privatekey-provider");
 
-var rinkebyProvider = new PrivateKeyProvider(process.env.PRIVATE_KEY, `https://rinkeby.infura.io/v3/${process.env.INFURA_ID}`);
-
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -64,7 +62,7 @@ module.exports = {
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
     rinkeby: {
-      provider: rinkebyProvider,
+      provider: () => new PrivateKeyProvider(process.env.PRIVATE_KEY, `https://rinkeby.infura.io/v3/${process.env.INFURA_ID}`),
       network_id: 4,       // Ropsten's id
       gas: 5500000,        // Ropsten has a lower block limit than mainnet
       confirmations: 2,    // # of confs to wait between deployments. (default: 0)

@@ -4,23 +4,21 @@ import { useWeb3React } from '@web3-react/core';
 import Web3 from 'web3';
 
 interface IEntropyFacade {
-  entropyFacade: EntopyFacade | null;
+  entropyFacade: EntopyFacade | undefined;
 }
 
 const EntropyContext = React.createContext<IEntropyFacade>({
-  entropyFacade: null,
+  entropyFacade: undefined,
 });
 
-const useEntropy = (): IEntropyFacade => useContext(EntropyContext);
+const useEntropy = (): IEntropyFacade => useContext<IEntropyFacade>(EntropyContext);
 
-const useEntropyProvider = (): IEntropyFacade => {
-  const [entropyFacade, setEntropyFacade] = useState<EntopyFacade | null>(null);
+const EntropyProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
   
+  const [entropyFacade, setEntropyFacade] = useState<EntopyFacade>();
   const { account, library } = useWeb3React<Web3>();
 
-
   useEffect((): void => {
-    
     if (account && library) {
       setEntropyFacade(
         new EntopyFacade(library, account, process.env.REACT_APP_CONTRACT_ADDRESS || ''),
@@ -28,15 +26,7 @@ const useEntropyProvider = (): IEntropyFacade => {
     }
   }, [account, library]);
 
-  return {
-    entropyFacade,
-  };
-};
-
-const EntropyProvider = ({ children }: { children: React.ReactNode }): React.ReactElement => {
-  const entropyFacade = useEntropyProvider();
-
-  return <EntropyContext.Provider value={entropyFacade}>{children}</EntropyContext.Provider>;
+  return <EntropyContext.Provider value={{ entropyFacade }}>{children}</EntropyContext.Provider>;
 };
 
 export { EntropyProvider, useEntropy };

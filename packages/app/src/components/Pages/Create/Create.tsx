@@ -1,11 +1,7 @@
-import React, { useEffect } from 'react'
-import Matrix from '../../molecules/Matrix/Matrix'
-import * as Square from '../../../lib/square'
+import React from 'react'
 import styled from 'styled-components'
-import { useWeb3React } from '@web3-react/core'
-import Web3 from 'web3'
-import { injected } from '../../../connectors/connectors'
-
+import * as Square from '../../../lib/square'
+import Matrix from '../../molecules/Matrix/Matrix'
 
 const Headline = styled.h1`
   font-size: 36px;
@@ -30,14 +26,6 @@ const mx1 = Square.fromText(`10000001
 10000001`)
 
 const Create = () => {
-  const { activate } = useWeb3React<Web3>();
-
-
-  const mint = () => {
-    activate(injected);
-    // TODO: call mint function
-  }
-
   return (
     <div>
       <Headline>Entropy</Headline>

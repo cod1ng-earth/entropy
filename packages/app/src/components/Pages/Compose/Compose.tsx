@@ -1,9 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import * as Square from '../../../lib/square'
 import styled from 'styled-components'
-import { useWeb3React } from '@web3-react/core'
-import Web3 from 'web3'
-import { injected } from '../../../connectors/connectors'
 import SimpleMatrix from '../../molecules/SimpleMatrix/SimpleMatrix'
 import { ReactComponent as And } from '../../../icons/and.svg'
 import { ReactComponent as Xor } from '../../../icons/xor.svg'
@@ -81,10 +78,8 @@ const Compose = () => {
   // const [showClear, setShowClear] = useState<boolean>(false);
   const [isMinting, setIsMinting] = useState<boolean>(false);
 
-  const { activate } = useWeb3React<Web3>();
   const { entropyFacade } = useEntropy();
   const { addToast, removeAllToasts } = useToasts();
-
 
   const handleMint = async (): Promise<void> => {
     if (entropyFacade) {
@@ -157,14 +152,6 @@ const Compose = () => {
 
   }, [entropyFacade])
 
-  const { isPending: isWalletPending } = useAsync({
-    promiseFn: useCallback(async () => {
-      addToast('Please login to your wallet');
-      activate(injected);
-    }, []),
-    onResolve: () => removeAllToasts(),
-  });
-
   const { isPending: isTokensPending, reload: refetchMyTokens } = useAsync({
     promiseFn: fetchMyTokens,
   });
@@ -175,7 +162,6 @@ const Compose = () => {
 
   return (
     <React.Fragment>
-      {!isWalletPending &&
         <Container>
           <Headline>Compose</Headline>
           <Subtitle>Select some of your tokens to mint a new one.</Subtitle>
@@ -212,7 +198,6 @@ const Compose = () => {
             <span>minting in progress</span>
           }
         </Container>
-      }
     </React.Fragment>
 
   )

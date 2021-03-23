@@ -1,18 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
-import * as Square from '../../../lib/square'
-import SimpleMatrix from '../../molecules/SimpleMatrix/SimpleMatrix'
-import { ReactComponent as And } from '../../../icons/and.svg'
-import { ReactComponent as Xor } from '../../../icons/xor.svg'
-import { ReactComponent as Or } from '../../../icons/or.svg'
-import Matrix from '../../molecules/Matrix/Matrix'
-import { useEntropy } from '../../../context/Entropy'
-import { useWeb3React } from '@web3-react/core'
-import Web3 from 'web3'
-import { injected } from '../../../connectors/connectors'
 import { useAsync } from 'react-async'
-import { useToasts } from 'react-toast-notifications';
+import styled from 'styled-components'
+import { useEntropy } from '../../../context/Entropy'
+import { ReactComponent as And } from '../../../icons/and.svg'
+import { ReactComponent as Or } from '../../../icons/or.svg'
+import { ReactComponent as Xor } from '../../../icons/xor.svg'
 import intToBuffer from '../../../lib/intToBuffer'
+import * as Square from '../../../lib/square'
+import Matrix from '../../molecules/Matrix/Matrix'
+import SimpleMatrix from '../../molecules/SimpleMatrix/SimpleMatrix'
 
 const List = styled.ul`
   display: grid;
@@ -138,10 +134,7 @@ const Arts = () => {
   const [composedSquare, setComposedSquare] = useState<Square.Square>([]);
   const [showMyTokens, setShowMyTokens] = useState<boolean>(true);
 
-  const { activate } = useWeb3React<Web3>();
   const { entropyFacade } = useEntropy();
-  const { addToast, removeAllToasts } = useToasts();
-
 
   const handleClick = (index: number) => {
     const newSelected = { ...selected, [index]: !selected[index] };
@@ -169,7 +162,6 @@ const Arts = () => {
   useEffect(() => {
     let numberOfSelection = 0;
     for (const item in selected) {
-
       if (selected[item]) {
         numberOfSelection += 1;
       }
@@ -183,103 +175,81 @@ const Arts = () => {
     if (entropyFacade) {
       const artTokens: any = [];
       const all = await entropyFacade.getAllTokens();
-      all.forEach((num: string, index: number) => {
+      all.map((num: string, index: number) => {
         const sq = Square.fromBytes(intToBuffer(num));
-
-        artTokens.push({ id: index, mx: sq })
+        return { id: index, mx: sq }
       })
       setArts(artTokens);
     }
-
   }
 
   const fetchMyTokens = async () => {
     if (entropyFacade) {
-      const artTokens: any = [];
       const all = await entropyFacade.getMyTokens();
-      all.forEach((num: string, index: number) => {
+      const artTokens = all.map((num: string, index: number) => {
         //const bnId = entropyFacade.idToBn(num);
         //const hx = bnId.toBuffer().toString('hex');
         //const sq = Square.fromBytes(bnId.toBuffer());
         const sq = Square.fromBytes(intToBuffer(num));
-
-        artTokens.push({ id: index, mx: sq })
-      })
+        return { id: index, mx: sq }
+      });
       setArts(artTokens);
     }
   }
 
   const fetchTokens = useCallback(async () => {
     if (entropyFacade) {
-      if (showMyTokens) {
-        return fetchMyTokens();
-      } else {
-        return fetchAllTokens();
-      }
+        return showMyTokens ? fetchMyTokens(): fetchAllTokens();
     }
-
   }, [showMyTokens, entropyFacade])
-
-  const { isPending: isWalletPending } = useAsync({
-    promiseFn: useCallback(async () => {
-      addToast('Please login to your wallet');
-      activate(injected);
-    }, []),
-    onResolve: () => removeAllToasts(),
-  });
 
   const { isPending: isTokensPending } = useAsync({
     promiseFn: fetchTokens,
   });
 
   return (
-    <React.Fragment>
-      {isWalletPending && <div>Please connect to your wallet</div>}
-      {!isWalletPending &&
-        <React.Fragment>
+        <>
+        <Filter>
+          <label>show: </label>
+          <select onChange={(e)=> setShowMyTokens(e.target.value === 'my_tokens')}>
+            <option value="my_tokens">My tokens</option>
+            <option value="all_tokens">All tokens</option>
+          </select>
+        </Filter>
+        <List>
+        {isTokensPending
+          ? <span>Loading</span>
+          : arts.length > 0 && arts.map((art, index) => (
+            <ArtPiece isSelected={selected[index]} key={art.id} onClick={() => handleClick(index)}>
+              <SimpleMatrix square={art.mx} onClick={() => null} isSelected={false} />
+            </ArtPiece>
+          ))
+        }
+        {showActions && (
+          <FabIconList>
+            <Button onClick={() => handleOperation(Square.xor)}>
+              <Xor />
+            </Button>
+            <Button onClick={() => handleOperation(Square.and)}>
+              <And />
+            </Button>
+            <Button onClick={() => handleOperation(Square.or)}>
+              <Or />
+            </Button>
+          </FabIconList>
+        )}
+        {composedSquare.length &&
+          <Modal >
 
-          <Filter>
-            <label>show: </label>
-            <select onChange={(e)=> setShowMyTokens(e.target.value === 'my_tokens')}>
-              <option value="my_tokens">My tokens</option>
-              <option value="all_tokens">All tokens</option>
-            </select>
-          </Filter>
-          <List>
-            {isTokensPending && <span>Loading</span>}
-            {!isTokensPending && arts.length > 0 &&
-              arts.map((art, index) => (
-                <ArtPiece isSelected={selected[index]} key={art.id} onClick={() => handleClick(index)}>
-                  <SimpleMatrix square={art.mx} onClick={() => null} isSelected={false} />
-                </ArtPiece>
-              ))}
-            {showActions && (
-              <FabIconList>
-                <Button onClick={() => handleOperation(Square.xor)}>
-                  <Xor />
-                </Button>
-                <Button onClick={() => handleOperation(Square.and)}>
-                  <And />
-                </Button>
-                <Button onClick={() => handleOperation(Square.or)}>
-                  <Or />
-                </Button>
-              </FabIconList>
-            )}
-            {composedSquare.length > 0 &&
-              <Modal >
+            <ModalContent>
+              <CloseButton onClick={closeModal}>&times;</CloseButton>
+              <Matrix square={composedSquare} isSelectable={false} isMintable={false}/>
+            </ModalContent>
 
-                <ModalContent>
-                  <CloseButton onClick={closeModal}>&times;</CloseButton>
-                  <Matrix square={composedSquare} isSelectable={false} isMintable={false}/>
-                </ModalContent>
-
-              </Modal>
-            }
-          </List>
-        </React.Fragment>
-      }
-    </React.Fragment>
+          </Modal>
+        }
+      </List>
+    </>
   )
 }
 

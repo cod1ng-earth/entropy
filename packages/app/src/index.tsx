@@ -25,8 +25,8 @@ ReactDOM.render(
     <Web3ReactProvider getLibrary={getLibrary}>
       <ApolloProvider client={client}>
         <EntropyProvider>
-        <ToastProvider components={{ Toast }} autoDismiss={false} placement='bottom-center'>
-          <App />
+          <ToastProvider components={{ Toast }} autoDismiss={false} placement='bottom-center'>
+            <App />
           </ToastProvider>
         </EntropyProvider>
       </ApolloProvider>
