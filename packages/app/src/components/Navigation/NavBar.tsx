@@ -19,11 +19,9 @@ const Nav = styled.nav`
   margin-left: 1rem;
   margin-right: 1rem;
 
-  @media (min-width: 1280px) {
-    margin: 0 auto;
-    max-width: 1200px;
-  }
-
+  margin: 0 auto;
+  max-width: 1200px;
+  
   ul {
     padding: 0;
     list-style: none;

@@ -1,9 +1,9 @@
 import { useWeb3React } from '@web3-react/core';
 import { HashRouter } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button } from './atoms/Button';
-import NavBar from './Navigation/NavBar';
 import Web3 from 'web3';
+import ActivateWalletAlert from './atoms/ActivateWalletAlert';
+import NavBar from './Navigation/NavBar';
 import Navigation from './Navigation/Navigation';
 
 const Main = styled.main`
@@ -20,13 +20,13 @@ const Main = styled.main`
 
 function App() {
   
-  const { account, active} = useWeb3React<Web3>();
+  const { account } = useWeb3React<Web3>();
   
   return (
     <HashRouter>
       <NavBar />
       <Main>
-        {account && <Navigation />}
+        {account ? <Navigation /> : <ActivateWalletAlert />}
       </Main>
     </HashRouter>
   );
