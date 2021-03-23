@@ -1,5 +1,5 @@
 import { useWeb3React } from '@web3-react/core'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useToasts } from 'react-toast-notifications'
 import styled from 'styled-components'
@@ -7,8 +7,6 @@ import Web3 from 'web3'
 import { useEntropy } from '../../../context/Entropy'
 import * as Square from '../../../lib/square'
 import Matrix from '../../molecules/Matrix/Matrix'
-import { useAsync } from 'react-async';
-import { injected } from '../../../connectors/connectors'
 
 const Headline = styled.h1`
   font-size: 36px;
@@ -82,19 +80,7 @@ const Token = () => {
       setPage(nextPage % 3)
     }
   }
-
-  const { isPending: isWalletPending } = useAsync({
-    promiseFn: useCallback(async () => {
-      addToast('Please login to your wallet');
-      activate(injected);
-    }, []),
-    onResolve: () => removeAllToasts(),
-  });
-
-  // useAsync({
-  //   promiseFn: fetchTokenUri,
-  // });
-
+  
   return (
     <div>
       <Headline>Entropy 0x{id}</Headline>
