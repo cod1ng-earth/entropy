@@ -173,27 +173,26 @@ const Arts = () => {
 
   const fetchAllTokens = async () => {
     if (entropyFacade) {
-      const artTokens: any = [];
       const all = await entropyFacade.getAllTokens();
-      all.map((num: string, index: number) => {
+      const allTokens = all.map((num: string, index: number) => {
         const sq = Square.fromBytes(intToBuffer(num));
         return { id: index, mx: sq }
       })
-      setArts(artTokens);
+      setArts(allTokens);
     }
   }
 
   const fetchMyTokens = async () => {
     if (entropyFacade) {
       const all = await entropyFacade.getMyTokens();
-      const artTokens = all.map((num: string, index: number) => {
+      const myTokens = all.map((num: string, index: number) => {
         //const bnId = entropyFacade.idToBn(num);
         //const hx = bnId.toBuffer().toString('hex');
         //const sq = Square.fromBytes(bnId.toBuffer());
         const sq = Square.fromBytes(intToBuffer(num));
         return { id: index, mx: sq }
       });
-      setArts(artTokens);
+      setArts(myTokens);
     }
   }
 
