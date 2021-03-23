@@ -218,7 +218,7 @@ const Arts = () => {
         <List>
         {isTokensPending
           ? <span>Loading</span>
-          : arts.length > 0 && arts.map((art, index) => (
+          : arts.map((art, index) => (
             <ArtPiece isSelected={selected[index]} key={art.id} onClick={() => handleClick(index)}>
               <SimpleMatrix square={art.mx} onClick={() => null} isSelected={false} />
             </ArtPiece>
